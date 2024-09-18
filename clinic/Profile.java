@@ -44,49 +44,40 @@ public class Profile implements Comparable<Profile> {
         return fname + " " + lname + " " + dob.toString();  // Format: FirstName LastName DOB
     }
 
-    // Override compareTo() method
     @Override
     public int compareTo(Profile other) {
-        // Compare by last name
+        // Step 1: Compare last names
         int lnameComparison = this.lname.compareTo(other.lname);
         if (lnameComparison != 0) {
-            return lnameComparison;
+            return Integer.compare(lnameComparison, 0);  // Normalize result to -1, 0, or 1
         }
 
-        // If last names are the same, compare by first name
+        // Step 2: Compare first names if last names are the same
         int fnameComparison = this.fname.compareTo(other.fname);
         if (fnameComparison != 0) {
-            return fnameComparison;
+            return Integer.compare(fnameComparison, 0);  // Normalize result to -1, 0, or 1
         }
 
-        // If both first and last names are the same, compare by date of birth
-        return this.dob.compareTo(other.dob);
+        // Step 3: Compare dates if both first and last names are the same
+        return Integer.compare(this.dob.compareTo(other.dob), 0);  // Compare dates directly
     }
 
-    // Testbed main() method for testing the compareTo() method
+
     public static void main(String[] args) {
-        // Create Date objects for testing
-        Date dob1 = new Date(12, 13, 1989);
-        Date dob2 = new Date(6, 15, 1990);
-        Date dob3 = new Date(12, 13, 1989);  // Same DOB as dob1
+        // Create profiles for test cases
+        Profile p1 = new Profile("John", "Doe", new Date(12, 13, 1989));   // Profile 1
+        Profile p2 = new Profile("Alice", "Smith", new Date(8, 17, 1990));  // Profile 2
+        Profile p3 = new Profile("Jane", "Doe", new Date(6, 25, 1992));     // Profile 3
+        Profile p4 = new Profile("John", "Doe", new Date(12, 13, 1989));    // Same as Profile 1
 
-        // Create Profile objects for testing
-        Profile p1 = new Profile("John", "Doe", dob1);
-        Profile p2 = new Profile("John", "Doe", dob2);   // Different DOB
-        Profile p3 = new Profile("Alice", "Smith", dob1); // Different name
-        Profile p4 = new Profile("John", "Doe", dob3);   // Same as p1
-        Profile p5 = new Profile("Jane", "Doe", dob1);   // Different first name
-
-        // Test equals method
-        System.out.println("Test equals():");
-        System.out.println("p1.equals(p4): " + p1.equals(p4) + " (Expected: true)");  // Same profile
-        System.out.println("p1.equals(p2): " + p1.equals(p2) + " (Expected: false)"); // Different DOB
-
-        // Test compareTo method
-        System.out.println("\nTest compareTo():");
-        System.out.println("p1.compareTo(p4): " + p1.compareTo(p4) + " (Expected: 0)"); // Same profiles
-        System.out.println("p1.compareTo(p2): " + p1.compareTo(p2) + " (Expected: < 0)"); // Same name, earlier DOB
-        System.out.println("p1.compareTo(p5): " + p1.compareTo(p5) + " (Expected: > 0)"); // Same last name, p1's first name comes later
-        System.out.println("p3.compareTo(p1): " + p3.compareTo(p1) + " (Expected: > 0)"); // p3's last name comes later
+        // Test cases for Profile class compareTo() method
+        System.out.println("p1.compareTo(p2): " + p1.compareTo(p2) + " (Expected: -1)");  // Case 1
+        System.out.println("p2.compareTo(p1): " + p2.compareTo(p1) + " (Expected: 1)");   // Case 2
+        System.out.println("p3.compareTo(p1): " + p3.compareTo(p1) + " (Expected: -1)");  // Case 3
+        System.out.println("p1.compareTo(p3): " + p1.compareTo(p3) + " (Expected: 1)");   // Case 4
+        System.out.println("p3.compareTo(p1): " + p3.compareTo(p1) + " (Expected: -1)");  // Case 5
+        System.out.println("p1.compareTo(p3): " + p1.compareTo(p3) + " (Expected: 1)");   // Case 6
+        System.out.println("p1.compareTo(p4): " + p1.compareTo(p4) + " (Expected: 0)");   // Case 7
     }
+
 }
