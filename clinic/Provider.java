@@ -19,6 +19,17 @@ public enum Provider {
         this.specialty = specialty;
     }
 
+    @Override
+    public String toString() {
+        return String.format("[%s, %s, %s %s, %s]",
+                this.name(), // Provider's name
+                location.getCity(), // City where the provider operates
+                location.getCounty(), // County
+                location.getZip(), // ZIP code
+                specialty.name() // Provider's specialty
+        );
+    }
+
     // Getter for location
     public Location getLocation() {
         return location;

@@ -1,38 +1,182 @@
 package clinic;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
 import java.util.Scanner;
+import java.util.StringTokenizer;
+import java.util.Calendar;
+
 
 public class Scheduler {
     // Instance variables for managing appointments and commands
+    private static final int MAX_APPOINTMENTS = 100;  // Adjust this as needed
+    private Appointment[] appointments = new Appointment[MAX_APPOINTMENTS];
+    private int appointmentCount = 0;  // Track the number of appointments
 
     public void run() {
         System.out.println("Scheduler is running.");
         Scanner scanner = new Scanner(System.in);
 
         boolean running = true;
-        String command;
 
         while (running) {
             System.out.print(">> "); //Input line for user
-            String input = scanner.nextLine(); // Read the input as a string
-            if (input.equals("S")) {
+            String input = scanner.nextLine().trim(); // User input + trims any whitespace
 
-            } else if (input.equals("C")) {
+            if (input.isEmpty()) {  //If the user presses enter (or nothing)
+                continue;
+            }
 
-            } else if (input.equals("R")) {
+            //parsing the input
+            StringTokenizer tokenizer = new StringTokenizer(input, ",");
+            String command = tokenizer.nextToken();                          // "S"
 
-            } else if (input.equals("PA")) {
+            if (command.equals("S")) {
 
-            } else if (input.equals("PP")) {
+                //parsing the rest of the input
+                String aptDate = tokenizer.nextToken();                          // "9/31/2024"
+                String timeSlot = tokenizer.nextToken();                         // "1"
+                Timeslot selectedTimeslot = null;
+                String fName = tokenizer.nextToken();                            // "John"
+                String lName = tokenizer.nextToken();                            // "Doe"
+                String dob = tokenizer.nextToken();                              // "12/13/1989"
+                String inputProvider = tokenizer.nextToken();                    // "PATEL"
 
-            } else if (input.equals("PL")) {
+                // create the appointment date
+                String[] splitDate = aptDate.split("/");
+                int aMonth = Integer.parseInt(splitDate[0]);
+                int aDay = Integer.parseInt(splitDate[1]);
+                int aYear = Integer.parseInt(splitDate[2]);
+                Date date = new Date(aMonth, aDay, aYear);         // Create a Date object using the constructor
 
-            } else if (input.equals("PS")) {
+                Calendar calendar = Calendar.getInstance();
+                int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+                int currentMonth = calendar.get(Calendar.MONTH) + 1;  // Month is 0-indexed, so add 1
+                int currentYear = calendar.get(Calendar.YEAR);
+                Date currentDate = new Date(currentMonth, currentDay, currentYear);  // date object for today's date
 
-            } else if (input.equals("Q")) {
+                calendar.add(Calendar.DAY_OF_MONTH, -1); // Subtract 1 day from today's date
+                int yesterDay = calendar.get(Calendar.DAY_OF_MONTH);
+                int yesterMonth = calendar.get(Calendar.MONTH) + 1;  // Again, month is 0-indexed
+                int yesterYear = calendar.get(Calendar.YEAR);
+                Date yesterDate = new Date(yesterMonth, yesterDay, yesterYear); //date obj for yesterday
+
+                Calendar appointmentCalendar = Calendar.getInstance();
+                appointmentCalendar.set(aYear, aMonth - 1, aDay);  // Subtract 1 from the month because Calendar months are 0-based
+                int dayOfWeek = appointmentCalendar.get(Calendar.DAY_OF_WEEK); // Gets the date of the Week
+                //System.out.println("Day of the week for the appointment: " + dayOfWeek); // (Error check with Calander class)
+
+                Calendar sixMonthsFromNow = Calendar.getInstance();
+                sixMonthsFromNow.add(Calendar.MONTH, 6);  // Add 6 months
+
+                String[] splitDob = dob.split("/");   // Splits the dob
+                int dobMonth = Integer.parseInt(splitDob[0]);
+                int dobDay = Integer.parseInt(splitDob[1]);
+                int dobYear = Integer.parseInt(splitDob[2]);
+                Date dobDate = new Date(dobMonth, dobDay, dobYear);
+
+                // Create the patient profile
+                Profile patient = new Profile(fName, lName, dobDate);
+
+                //Error Checks for the appointment date
+                if (!date.isValid()) { //valid APT date?
+                    System.out.println("Appointment date: " + aptDate + " is not a valid calendar date.");
+                    continue;
+                } else if (date.equals(currentDate) || date.equals(yesterDate)) {  //yesterday?
+                    System.out.println("Appointment date: " + aptDate + " is today or a date before today.");
+                    continue;
+                } else if (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) {  //weekend?
+                    System.out.println("Appointment date: " + aptDate + " is Saturday or Sunday.");
+                    continue;
+                } else if (appointmentCalendar.after(sixMonthsFromNow)) {   //Within 6 months?
+                    System.out.println("Appointment date: " + aptDate + " is not within six months.");
+                    continue;
+                }
+
+                //Checks for the timeSlot
+                try { //Attempts to build the timeSlot
+                    int timeSlotNumber = Integer.parseInt(timeSlot);
+                    selectedTimeslot = Timeslot.getTimeslotByNumber(timeSlotNumber);
+                    if (selectedTimeslot == null) {
+                        System.out.println(timeSlot + " is not a valid time slot.");
+                        continue;
+                    }
+                } catch (NumberFormatException e) { // error catcher for non-numerics
+                    System.out.println(timeSlot + " is not a valid time slot.");
+                    continue;
+                }
+
+                //Checks for dob
+                if (!dobDate.isValid()) { //dob valid
+                    System.out.println("Patient dob: " + dob + " is not a valid calendar date.");
+                    continue;
+                } else if (dobDate.compareTo(currentDate) >= 0) { //dob not today or in the future
+                    System.out.println("Patient dob: " + dob + " is today or a date after today.");
+                    continue;
+                }
+
+                // Check for duplicate appointments
+                Appointment newAppointment = new Appointment(date, selectedTimeslot, patient, null);  // No provider yet (order of the checks)
+                boolean duplicateFound = false;
+                for (int i = 0; i < appointmentCount; i++) {
+                    if (appointments[i].compareTo(newAppointment) == 0) {
+                        System.out.println(fName + " " + lName + " " + dob + " has an existing appointment at the same time slot.");
+                        duplicateFound = true;
+                        break;  // Exit the loop as soon as we find a duplicate
+                    }
+                }
+
+                if (duplicateFound) {
+                    continue;  // Don't proceed with provider check if a duplicate is found
+                }
+
+                // Provider check after appointment validation
+                Provider provider;
+                try {
+                    provider = Provider.valueOf(inputProvider);  // Retrieve provider from enum
+                } catch (IllegalArgumentException e) {
+                    System.out.println(inputProvider + " - provider doesn't exist.");
+                    continue;
+                }
+
+                boolean providerTaken = false;
+                for (int i = 0; i < appointmentCount; i++) {
+                    if (appointments[i].getProvider().equals(provider) &&
+                            appointments[i].getTimeslot().equals(selectedTimeslot)) {
+                        System.out.println(provider.toString() + " is not available at slot " + timeSlot + ".");
+                        // [PATEL, BRIDGEWATER, Somerset 08807, FAMILY] is not available at slot 1.
+                        providerTaken = true;
+                        break;
+                    }
+                }
+
+                if (providerTaken) {
+                    continue; // Skip if provider is already booked
+                }
+
+                // Finalize the appointment (provider confirmed
+                newAppointment = new Appointment(date, selectedTimeslot, patient, provider);
+
+                // Add the appointment if there's no error
+                if (appointmentCount < MAX_APPOINTMENTS) {
+                    appointments[appointmentCount++] = newAppointment;
+                    System.out.println(newAppointment.toString() + " booked.");
+                    // 1/17/2025 4:15 PM Duke Ellington 1/20/2003 [KAUR, PRINCETON, Mercer 08542, ALLERGIST] booked.
+                } else {
+                    System.out.println("Appointment list is full."); //Edge case
+                }
+
+            } else if (command.equals("C")) {
+
+            } else if (command.equals("R")) {
+
+            } else if (command.equals("PA")) {
+
+            } else if (command.equals("PP")) {
+
+            } else if (command.equals("PL")) {
+
+            } else if (command.equals("PS")) {
+
+            } else if (command.equals("Q")) {
                 System.out.print("Scheduler is terminated.");
                 running = false;
             } else {

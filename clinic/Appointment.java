@@ -7,7 +7,7 @@ public class Appointment implements Comparable<Appointment> {
     private Provider provider;
 
     // Constructor, getters, and setters
-    public Appointment(Date date, Timeslot timeslot, Profile patient, Provider provider) {
+    public Appointment (Date date, Timeslot timeslot, Profile patient, Provider provider) {
         this.date = date;
         this.timeslot = timeslot;
         this.patient = patient;

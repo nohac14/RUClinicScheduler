@@ -69,7 +69,7 @@ public class Profile implements Comparable<Profile> {
         Profile p2 = new Profile("Alice", "Smith", new Date(8, 17, 1990));  // Profile 2
         Profile p3 = new Profile("Jane", "Doe", new Date(6, 25, 1992));     // Profile 3
         Profile p4 = new Profile("John", "Doe", new Date(12, 13, 1989));    // Same as Profile 1
-\
+
         // Test cases for Profile class compareTo() method
         System.out.println("p1.compareTo(p2): " + p1.compareTo(p2) + " (Expected: -1)");  // Case 1
         System.out.println("p2.compareTo(p1): " + p2.compareTo(p1) + " (Expected: 1)");   // Case 2
@@ -79,5 +79,4 @@ public class Profile implements Comparable<Profile> {
         System.out.println("p1.compareTo(p3): " + p1.compareTo(p3) + " (Expected: 1)");   // Case 6
         System.out.println("p1.compareTo(p4): " + p1.compareTo(p4) + " (Expected: 0)");   // Case 7
     }
-
 }

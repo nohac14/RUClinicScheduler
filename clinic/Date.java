@@ -34,8 +34,8 @@ public class Date implements Comparable<Date> {
 
     // Method to check if the date is valid
     public boolean isValid() {
-        // Check if year is before 1900 or after the current year
-        if (year < 1900 || year > Calendar.getInstance().get(Calendar.YEAR)) {
+        // Check if year is before 1900
+        if (year < 1900) {
             return false;
         }
 

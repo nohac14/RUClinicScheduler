@@ -17,6 +17,25 @@ public enum Timeslot {
         this.minute = minute;
     }
 
+    public static Timeslot getTimeslotByNumber(int timeSlot) {
+        switch (timeSlot) {
+            case 1:
+                return Timeslot.SLOT1;
+            case 2:
+                return Timeslot.SLOT2;
+            case 3:
+                return Timeslot.SLOT3;
+            case 4:
+                return Timeslot.SLOT4;
+            case 5:
+                return Timeslot.SLOT5;
+            case 6:
+                return Timeslot.SLOT6;
+            default:
+                return null; // Return null if the timeslot is invalid
+        }
+    }
+
     // Getter for hour
     public int getHour() {
         return hour;
