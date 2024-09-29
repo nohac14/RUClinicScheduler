@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="06d397c6-a2b7-46b3-9721-afa06b26e149" name="Changes" comment="More terminal options">
-      <change afterPath="$PROJECT_DIR$/clinic/testCases" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clinic/Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/clinic/Profile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clinic/RunProject1.java" beforeDir="false" afterPath="$PROJECT_DIR$/clinic/RunProject1.java" afterDir="false" />
+    <list default="true" id="06d397c6-a2b7-46b3-9721-afa06b26e149" name="Changes" comment="Added the S command to Scheduler, added code to the provider and timeSlot class, and edited some small details elsewhere">
+      <change beforePath="$PROJECT_DIR$/clinic/Appointment.java" beforeDir="false" afterPath="$PROJECT_DIR$/clinic/Appointment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/clinic/Scheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/clinic/Scheduler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/RUClinicScheduler/clinic/Scheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/RUClinicScheduler/clinic/Scheduler.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,6 +59,9 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="jar://$USER_HOME$/Library/Java/JavaVirtualMachines/temurin-21.0.4/Contents/Home/lib/src.zip!/java.base/java/lang/Object.java" root0="FORCE_HIGHLIGHTING" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -72,6 +74,7 @@
   &quot;keyToString&quot;: {
     &quot;Application.Main.executor&quot;: &quot;Run&quot;,
     &quot;Application.Profile.executor&quot;: &quot;Run&quot;,
+    &quot;Application.RunProject1.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;pepper&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
@@ -81,6 +84,11 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;ChangesTree.GroupingKeys&quot;: [
+      &quot;module&quot;
+    ]
   }
 }</component>
   <component name="RunManager">
@@ -123,7 +131,8 @@
       <workItem from="1726521379679" duration="4750000" />
       <workItem from="1726763902021" duration="1530000" />
       <workItem from="1727290092376" duration="139000" />
-      <workItem from="1727358112399" duration="3329000" />
+      <workItem from="1727358112399" duration="26341000" />
+      <workItem from="1727646836591" duration="3732000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <option name="closed" value="true" />
@@ -173,7 +182,39 @@
       <option name="project" value="LOCAL" />
       <updated>1726609927337</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="test cases added; basci script added (penis)">
+      <option name="closed" value="true" />
+      <created>1727367152526</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1727367152526</updated>
+    </task>
+    <task id="LOCAL-00008" summary="test cases added; basci script added (penis)">
+      <option name="closed" value="true" />
+      <created>1727367203145</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1727367203145</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Added the S command to Scheduler, added code to the provider and timeSlot class, and edited some small details elsewhere">
+      <option name="closed" value="true" />
+      <created>1727583979239</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1727583979239</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Added the S command to Scheduler, added code to the provider and timeSlot class, and edited some small details elsewhere">
+      <option name="closed" value="true" />
+      <created>1727641397827</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1727641397827</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -225,6 +266,8 @@
     <MESSAGE value="gay" />
     <MESSAGE value="test Terminal" />
     <MESSAGE value="More terminal options" />
-    <option name="LAST_COMMIT_MESSAGE" value="More terminal options" />
+    <MESSAGE value="test cases added; basci script added (penis)" />
+    <MESSAGE value="Added the S command to Scheduler, added code to the provider and timeSlot class, and edited some small details elsewhere" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added the S command to Scheduler, added code to the provider and timeSlot class, and edited some small details elsewhere" />
   </component>
 </project>

@@ -30,7 +30,6 @@ public class Scheduler {
             String command = tokenizer.nextToken();                          // "S"
 
             if (command.equals("S")) {
-
                 //parsing the rest of the input
                 String aptDate = tokenizer.nextToken();                          // "9/31/2024"
                 String timeSlot = tokenizer.nextToken();                         // "1"
@@ -131,7 +130,7 @@ public class Scheduler {
                 // Provider check after appointment validation
                 Provider provider;
                 try {
-                    provider = Provider.valueOf(inputProvider);  // Retrieve provider from enum
+                    provider = Provider.valueOf(inputProvider.toUpperCase());
                 } catch (IllegalArgumentException e) {
                     System.out.println(inputProvider + " - provider doesn't exist.");
                     continue;
@@ -140,7 +139,8 @@ public class Scheduler {
                 boolean providerTaken = false;
                 for (int i = 0; i < appointmentCount; i++) {
                     if (appointments[i].getProvider().equals(provider) &&
-                            appointments[i].getTimeslot().equals(selectedTimeslot)) {
+                            appointments[i].getTimeslot().equals(selectedTimeslot) &&
+                            appointments[i].getDate().equals(date)) {
                         System.out.println(provider.toString() + " is not available at slot " + timeSlot + ".");
                         // [PATEL, BRIDGEWATER, Somerset 08807, FAMILY] is not available at slot 1.
                         providerTaken = true;
@@ -165,9 +165,135 @@ public class Scheduler {
                 }
 
             } else if (command.equals("C")) {
+                // Parsing the input data
+                String aptDate = tokenizer.nextToken();      // e.g., "9/31/2024"
+                String timeSlot = tokenizer.nextToken();     // e.g., "1"
+                String fName = tokenizer.nextToken();        // e.g., "John"
+                String lName = tokenizer.nextToken();        // e.g., "Doe"
+                String dob = tokenizer.nextToken();          // e.g., "12/13/1989"
 
+                // Parse the date and create a Date object for the appointment
+                String[] splitDate = aptDate.split("/");
+                int aMonth = Integer.parseInt(splitDate[0]);
+                int aDay = Integer.parseInt(splitDate[1]);
+                int aYear = Integer.parseInt(splitDate[2]);
+                Date date = new Date(aMonth, aDay, aYear);
+
+                // Convert the timeslot string to a Timeslot object
+                Timeslot selectedTimeslot = Timeslot.getTimeslotByNumber(Integer.parseInt(timeSlot));
+
+                // Parse the date of birth and create a Date object for the patient's DOB
+                String[] splitDob = dob.split("/");
+                int dobMonth = Integer.parseInt(splitDob[0]);
+                int dobDay = Integer.parseInt(splitDob[1]);
+                int dobYear = Integer.parseInt(splitDob[2]);
+                Date dobDate = new Date(dobMonth, dobDay, dobYear);
+
+                // Create a Profile object for the patient
+                Profile patient = new Profile(fName, lName, dobDate);
+
+                String formattedTimeslot = selectedTimeslot.toString(); // Assuming toString() method returns in HH:MM AM/PM format
+
+                // Search for the matching appointment
+                boolean appointmentFound = false;
+                for (int i = 0; i < appointmentCount; i++) {
+                    Appointment currentAppointment = appointments[i];
+
+                    // Check if the current appointment matches the cancel request (same date, timeslot, and patient)
+                    if (currentAppointment.getDate().equals(date) &&
+                            currentAppointment.getTimeslot().equals(selectedTimeslot) &&
+                            currentAppointment.getPatient().equals(patient)) {
+
+                        System.out.println(aptDate + " " + formattedTimeslot + " " + fName + " " + lName + " " + dob + " has been canceled.");
+
+                        // Shift the appointments array to remove the canceled appointment
+                        for (int j = i; j < appointmentCount - 1; j++) {
+                            appointments[j] = appointments[j + 1];
+                        }
+                        appointments[--appointmentCount] = null;  // Decrease appointment count and set the last slot to null
+                        appointmentFound = true;
+                        break;
+                    }
+                }
+
+                // If no matching appointment was found
+                if (!appointmentFound) {
+                    System.out.println(aptDate + " " + formattedTimeslot + " " + fName + " " + lName + " " + dob + " does not exist.");
+                }
             } else if (command.equals("R")) {
+                // Parsing the input data
+                String aptDate = tokenizer.nextToken();      // e.g., "9/30/2024"
+                String oldTimeSlot = tokenizer.nextToken();  // e.g., "1"
+                String fName = tokenizer.nextToken();        // e.g., "John"
+                String lName = tokenizer.nextToken();        // e.g., "Doe"
+                String dob = tokenizer.nextToken();          // e.g., "12/13/1989"
+                String newTimeSlot = tokenizer.nextToken();  // New timeslot number (e.g., "2")
 
+                // new Date
+                String[] splitDate = aptDate.split("/");
+                int aMonth = Integer.parseInt(splitDate[0]);
+                int aDay = Integer.parseInt(splitDate[1]);
+                int aYear = Integer.parseInt(splitDate[2]);
+                Date date = new Date(aMonth, aDay, aYear);
+
+                Timeslot originalTimeslot = Timeslot.getTimeslotByNumber(Integer.parseInt(oldTimeSlot));
+                Timeslot newSelectedTimeslot = Timeslot.getTimeslotByNumber(Integer.parseInt(newTimeSlot));
+
+                // dob
+                String[] splitDob = dob.split("/");
+                int dobMonth = Integer.parseInt(splitDob[0]);
+                int dobDay = Integer.parseInt(splitDob[1]);
+                int dobYear = Integer.parseInt(splitDob[2]);
+                Date dobDate = new Date(dobMonth, dobDay, dobYear);
+
+                Profile patient = new Profile(fName, lName, dobDate);
+
+                // Step 1: Search for the existing appointment
+                Appointment targetAppointment = new Appointment(date, originalTimeslot, patient, null); // Null provider for comparison
+                boolean appointmentFound = false;
+                Appointment currentAppointment = null;
+
+                for (int i = 0; i < appointmentCount; i++) {
+                    if (appointments[i].compareTo(targetAppointment) == 0) {
+                        appointmentFound = true;
+                        currentAppointment = appointments[i];  // store data (order of checks)
+                        break;
+                    }
+                }
+
+                if (!appointmentFound) {
+                    // If no matching appointment was found, print the error and skip the timeslot check
+                    System.out.println(aptDate + " " + originalTimeslot + " " + fName + " " + lName + " " + dob + " does not exist.");
+                    continue;
+                }
+
+                // Step 2: Check if the new timeslot is valid
+                if (newSelectedTimeslot == null) {
+                    System.out.println(newTimeSlot + " is not a valid time slot.");
+                    continue;
+                }
+
+                // Step 3: Check if the new timeslot is available for the provider
+                Provider provider = currentAppointment.getProvider();
+                boolean isAvailable = true; // Assume available until checked
+
+                // Iterate through appointments to see if the provider is booked at the new timeslot on the same day
+                for (int j = 0; j < appointmentCount; j++) {
+                    if (appointments[j].getDate().equals(date) &&
+                            appointments[j].getTimeslot().equals(newSelectedTimeslot) &&
+                            appointments[j].getProvider().equals(provider)) {
+                        isAvailable = false;
+                        break;
+                    }
+                }
+
+                if (isAvailable) {
+                    currentAppointment.setTimeslot(newSelectedTimeslot);
+                    System.out.println("Rescheduled to " + currentAppointment.toString());
+                    //Rescheduled to 12/11/2024 10:45 AM Jane Doe 5/1/1996 [TAYLOR, PISCATAWAY, Middlesex 08854, PEDIATRICIAN]
+                } else {
+                    System.out.println(provider.toString() + " is not available at slot " + newTimeSlot + ".");
+                }
             } else if (command.equals("PA")) {
 
             } else if (command.equals("PP")) {

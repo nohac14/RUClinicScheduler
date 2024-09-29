@@ -30,6 +30,10 @@ public class Appointment implements Comparable<Appointment> {
         return provider;
     }
 
+    public void setTimeslot(Timeslot newTimeslot) {
+        this.timeslot = newTimeslot;
+    }
+
     @Override
     public boolean equals(Object obj) {
         // Logic for equality based on date, timeslot, and patient
