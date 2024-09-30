@@ -51,6 +51,6 @@ public enum Timeslot {
     public String toString() {
         String period = (hour < 12) ? "AM" : "PM";
         int formattedHour = (hour > 12) ? hour - 12 : hour;
-        return String.format("%02d:%02d %s", formattedHour, minute, period);
+        return formattedHour + ":" + String.format("%02d", minute) + " " + period;
     }
 }

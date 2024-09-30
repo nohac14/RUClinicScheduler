@@ -4,7 +4,6 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.Calendar;
 
-
 public class Scheduler {
     // Instance variables for managing appointments and commands
     private static final int MAX_APPOINTMENTS = 100;  // Adjust this as needed
@@ -18,7 +17,7 @@ public class Scheduler {
         boolean running = true;
 
         while (running) {
-            System.out.print(">> "); //Input line for user
+            //System.out.print(">> "); //Input line for user
             String input = scanner.nextLine().trim(); // User input + trims any whitespace
 
             if (input.isEmpty()) {  //If the user presses enter (or nothing)
@@ -295,13 +294,173 @@ public class Scheduler {
                     System.out.println(provider.toString() + " is not available at slot " + newTimeSlot + ".");
                 }
             } else if (command.equals("PA")) {
+                // Check if there are any appointments to display
+                if (appointmentCount == 0) {
+                    System.out.println("The schedule calendar is empty.");
+                    continue;
+                }
 
+                // Manual Bubble Sort to sort the appointments array by date (year, month, day), timeslot, and provider's name
+                for (int i = 0; i < appointmentCount - 1; i++) {
+                    for (int j = 0; j < appointmentCount - i - 1; j++) {
+                        // Step 1: Compare by date (year, month, day)
+                        int dateComparison = appointments[j].getDate().compareTo(appointments[j + 1].getDate());
+                        if (dateComparison > 0) {
+                            // Swap if appointment[j]'s date is later than appointment[j+1]'s date
+                            Appointment temp = appointments[j];
+                            appointments[j] = appointments[j + 1];
+                            appointments[j + 1] = temp;
+                            continue;  // Move on to next comparison
+                        }
+
+                        // Step 2: Compare by timeslot if the dates are the same
+                        if (dateComparison == 0) {
+                            int timeslotComparison = appointments[j].getTimeslot().compareTo(appointments[j + 1].getTimeslot());
+                            if (timeslotComparison > 0) {
+                                Appointment temp = appointments[j];
+                                appointments[j] = appointments[j + 1];
+                                appointments[j + 1] = temp;
+                                continue;  // Move on to next comparison
+                            }
+
+                            // Step 3: Compare by provider name if the dates and timeslots are the same
+                            int providerComparison = appointments[j].getProvider().name().compareTo(appointments[j + 1].getProvider().name());
+                            if (providerComparison > 0) {
+                                Appointment temp = appointments[j];
+                                appointments[j] = appointments[j + 1];
+                                appointments[j + 1] = temp;
+                            }
+                        }
+                    }
+                }
+
+                // Display the sorted appointments
+                System.out.println("** Appointments ordered by date/time/provider **");
+                for (int i = 0; i < appointmentCount; i++) {
+                    System.out.println(appointments[i].toString());
+                    // Example format: 12/11/2024 10:45 AM Jane Doe 5/1/1996 [PATEL, BRIDGEWATER, Somerset 08807, FAMILY]
+                }
+                System.out.println("** end of list **\n");
             } else if (command.equals("PP")) {
+            // Check if there are any appointments to display
+            if (appointmentCount == 0) {
+                System.out.println("The schedule calendar is empty.");
+                continue;
+            }
 
-            } else if (command.equals("PL")) {
+            // Manual Bubble Sort to sort the appointments by patient last name, first name, DOB, appointment date, and time
+            for (int i = 0; i < appointmentCount - 1; i++) {
+                for (int j = 0; j < appointmentCount - i - 1; j++) {
+                    // Compare two consecutive appointments using the compareTo() method in Appointment class
+                    if (appointments[j].compareTo(appointments[j + 1]) > 0) {
+                        // Swap appointments[j] and appointments[j + 1]
+                        Appointment temp = appointments[j];
+                        appointments[j] = appointments[j + 1];
+                        appointments[j + 1] = temp;
+                    }
+                }
+            }
 
+            // Display the sorted appointments
+            System.out.println("** Appointments ordered by patient/date/time **");
+            for (int i = 0; i < appointmentCount; i++) {
+                System.out.println(appointments[i].toString());
+                // Example format: 12/11/2024 10:45 AM Jane Doe 5/1/1996 [PATEL, BRIDGEWATER, Somerset 08807, FAMILY]
+            }
+            System.out.println("** end of list **\n");
+        } else if (command.equals("PL")) {
+                // Check if there are any appointments to display
+                if (appointmentCount == 0) {
+                    System.out.println("The schedule calendar is empty.");
+                    continue;
+                }
+
+                // Manual Bubble Sort to sort the appointments by county, date, and timeslot
+                for (int i = 0; i < appointmentCount - 1; i++) {
+                    for (int j = 0; j < appointmentCount - i - 1; j++) {
+                        // Compare two consecutive appointments using the compareByCounty() method in Appointment class
+                        if (appointments[j].compareByCounty(appointments[j + 1]) > 0) {
+                            // Swap appointments[j] and appointments[j + 1]
+                            Appointment temp = appointments[j];
+                            appointments[j] = appointments[j + 1];
+                            appointments[j + 1] = temp;
+                        }
+                    }
+                }
+
+                // Display the sorted appointments
+                System.out.println("** Appointments ordered by county/date/time **");
+                for (int i = 0; i < appointmentCount; i++) {
+                    System.out.println(appointments[i].toString());
+                    // Example format: 12/11/2024 10:45 AM Jane Doe 5/1/1996 [PATEL, BRIDGEWATER, Somerset 08807, FAMILY]
+                }
+                System.out.println("** end of list **\n");
             } else if (command.equals("PS")) {
+                // Check if there are any appointments to bill (assuming all completed appointments)
+                if (appointmentCount == 0) {
+                    System.out.println("No appointments found to bill.");
+                    continue;
+                }
 
+                // Sort appointments by patient (last name, first name, date of birth, then appointment date and time)
+                for (int i = 0; i < appointmentCount - 1; i++) {
+                    for (int j = 0; j < appointmentCount - i - 1; j++) {
+                        if (appointments[j].getPatient().compareTo(appointments[j + 1].getPatient()) > 0) {
+                            // Swap appointments[j] and appointments[j + 1]
+                            Appointment temp = appointments[j];
+                            appointments[j] = appointments[j + 1];
+                            appointments[j + 1] = temp;
+                        }
+                    }
+                }
+
+                // Display billing statements
+                System.out.println("** Billing statement ordered by patient **");
+
+                int index = 1;
+                int totalAmountDue = 0;
+                for (int i = 0; i < appointmentCount; i++) {
+                    Appointment currentAppointment = appointments[i];
+                    Provider provider = currentAppointment.getProvider();
+                    Profile patient = currentAppointment.getPatient();
+
+                    // Determine the charge based on the provider's specialty
+                    int charge = 0;
+                    switch (provider.getSpecialty()) {
+                        case FAMILY:
+                            charge = 250;
+                            break;
+                        case PEDIATRICIAN:
+                            charge = 300;
+                            break;
+                        case ALLERGIST:
+                            charge = 350;
+                            break;
+                    }
+
+                    // Accumulate charges for the current patient
+                    totalAmountDue += charge;
+
+                    // Check if next appointment belongs to a different patient or it's the last appointment
+                    boolean isLastAppointment = (i == appointmentCount - 1);
+                    boolean nextIsDifferentPatient = !isLastAppointment && !appointments[i + 1].getPatient().equals(currentAppointment.getPatient());
+
+                    // Print the statement for the current patient when a different patient is found or it's the last appointment
+                    if (nextIsDifferentPatient || isLastAppointment) {
+                        System.out.printf("(%d) %s %s [%s] - amount due: $%,.2f%n",
+                                index, patient.getFname(), patient.getLname(), patient.getDob().toString(), (double) totalAmountDue);
+                        index++;
+                        totalAmountDue = 0;  // Reset for the next patient
+                    }
+                }
+
+                System.out.println("** end of list **");
+
+                //Code to empty and reset the appointment list
+                for (int i = 0; i < appointmentCount; i++) {
+                    appointments[i] = null;
+                }
+                appointmentCount = 0;
             } else if (command.equals("Q")) {
                 System.out.print("Scheduler is terminated.");
                 running = false;

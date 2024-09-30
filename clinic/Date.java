@@ -111,18 +111,18 @@ public class Date implements Comparable<Date> {
     @Override
     public int compareTo(Date other) {
         if (this.year != other.year) {
-            return this.year - other.year;
+            return Integer.compare(this.year, other.year);  // Compare years first
         } else if (this.month != other.month) {
-            return this.month - other.month;
+            return Integer.compare(this.month, other.month);  // Compare months if years are the same
         } else {
-            return this.day - other.day;
+            return Integer.compare(this.day, other.day);  // Compare days if months are the same
         }
     }
 
     // Override the toString() method
     @Override
     public String toString() {
-        return String.format("%02d/%02d/%04d", month, day, year); // Format MM/DD/YYYY
+        return month + "/" + day + "/" + year; // Format MM/DD/YYYY
     }
 
     // Testbed main() method for testing the isValid() method

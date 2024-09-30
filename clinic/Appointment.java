@@ -70,6 +70,10 @@ public class Appointment implements Comparable<Appointment> {
     @Override
     public int compareTo(Appointment other) {
         // Comparison logic based on date, timeslot, provider
+        int patientComparison = this.patient.compareTo(other.patient);
+        if (patientComparison != 0) {
+            return patientComparison;
+        }
         // First, compare by date
         int dateComparison = this.date.compareTo(other.date);
         if (dateComparison != 0) {
@@ -85,4 +89,25 @@ public class Appointment implements Comparable<Appointment> {
         // If both date and timeslot are the same, compare by patient (for consistency in ordering)
         return this.patient.compareTo(other.patient);
     }
+
+    public int compareByCounty(Appointment other) { //Used for PL
+        // First, compare by provider's county
+        String thisCounty = this.provider.getLocation().getCounty();
+        String otherCounty = other.provider.getLocation().getCounty();
+
+        int countyComparison = thisCounty.compareTo(otherCounty);
+        if (countyComparison != 0) {
+            return countyComparison;
+        }
+
+        // If counties are the same, compare by appointment date
+        int dateComparison = this.date.compareTo(other.date);
+        if (dateComparison != 0) {
+            return dateComparison;
+        }
+
+        // If appointment dates are the same, compare by timeslot
+        return this.timeslot.compareTo(other.timeslot);
+    }
+
 }
