@@ -13,14 +13,11 @@ public class testModular {
         System.out.println("Scheduler is running.");
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
-
         while (running) {
             String input = scanner.nextLine().trim(); // User input + trims any whitespace
             if (input.isEmpty()) continue;
-
             StringTokenizer tokenizer = new StringTokenizer(input, ",");
             String command = tokenizer.nextToken();
-
             switch (command) {
                 case "S":
                     handleScheduleCommand(tokenizer);
@@ -366,44 +363,29 @@ public class testModular {
     }
 
     private void sortAppointmentsByDate() {
-        // Manual Bubble Sort to sort the appointments array by date (year, month, day), timeslot, and provider's name
         for (int i = 0; i < appointmentCount - 1; i++) {
             for (int j = 0; j < appointmentCount - i - 1; j++) {
-                // Step 1: Compare by date (year, month, day)
-                int dateComparison = appointments[j].getDate().compareTo(appointments[j + 1].getDate());
-                if (dateComparison > 0) {
-                    // Swap if appointment[j]'s date is later than appointment[j+1]'s date
-                    Appointment temp = appointments[j];
-                    appointments[j] = appointments[j + 1];
-                    appointments[j + 1] = temp;
-                    continue;  // Move on to next comparison
-                }
-
-                // Step 2: Compare by timeslot if the dates are the same
-                if (dateComparison == 0) {
-                    Timeslot slot1 = appointments[j].getTimeslot();
-                    Timeslot slot2 = appointments[j + 1].getTimeslot();
-
-                    // Timeslot enum comparison by ordinal value
-                    if (slot1.ordinal() > slot2.ordinal()) {
-                        Appointment temp = appointments[j];
-                        appointments[j] = appointments[j + 1];
-                        appointments[j + 1] = temp;
-                        continue;  // Move on to next comparison
-                    }
-
-                    // Step 3: Compare by provider name if the dates and timeslots are the same
-                    if (slot1.ordinal() == slot2.ordinal()) {
-                        int providerComparison = appointments[j].getProvider().name().compareTo(appointments[j + 1].getProvider().name());
-                        if (providerComparison > 0) {
-                            Appointment temp = appointments[j];
-                            appointments[j] = appointments[j + 1];
-                            appointments[j + 1] = temp;
-                        }
-                    }
+                if (compareAppointments(appointments[j], appointments[j + 1]) > 0) {
+                    swapAppointments(j, j + 1);
                 }
             }
         }
+    }
+    //helper for sortAppointmentsByDate
+    private int compareAppointments(Appointment a1, Appointment a2) {
+        int dateComparison = a1.getDate().compareTo(a2.getDate());
+        if (dateComparison != 0) return dateComparison;
+
+        int timeslotComparison = a1.getTimeslot().ordinal() - a2.getTimeslot().ordinal();
+        if (timeslotComparison != 0) return timeslotComparison;
+
+        return a1.getProvider().name().compareTo(a2.getProvider().name());
+    }
+    //helper for sortAppointmentsByDate
+    private void swapAppointments(int index1, int index2) {
+        Appointment temp = appointments[index1];
+        appointments[index1] = appointments[index2];
+        appointments[index2] = temp;
     }
 
     private void sortAppointmentsByPatient() {
