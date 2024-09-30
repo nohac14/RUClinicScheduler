@@ -51,11 +51,11 @@ public class Scheduler {
                 int currentYear = calendar.get(Calendar.YEAR);
                 Date currentDate = new Date(currentMonth, currentDay, currentYear);  // date object for today's date
 
-                calendar.add(Calendar.DAY_OF_MONTH, -1); // Subtract 1 day from today's date
-                int yesterDay = calendar.get(Calendar.DAY_OF_MONTH);
-                int yesterMonth = calendar.get(Calendar.MONTH) + 1;  // Again, month is 0-indexed
-                int yesterYear = calendar.get(Calendar.YEAR);
-                Date yesterDate = new Date(yesterMonth, yesterDay, yesterYear); //date obj for yesterday
+//                calendar.add(Calendar.DAY_OF_MONTH, -1); // Subtract 1 day from today's date
+//                int yesterDay = calendar.get(Calendar.DAY_OF_MONTH);
+//                int yesterMonth = calendar.get(Calendar.MONTH) + 1;  // Again, month is 0-indexed
+//                int yesterYear = calendar.get(Calendar.YEAR);
+//                Date yesterDate = new Date(yesterMonth, yesterDay, yesterYear); //date obj for yesterday
 
                 Calendar appointmentCalendar = Calendar.getInstance();
                 appointmentCalendar.set(aYear, aMonth - 1, aDay);  // Subtract 1 from the month because Calendar months are 0-based
@@ -78,7 +78,7 @@ public class Scheduler {
                 if (!date.isValid()) { //valid APT date?
                     System.out.println("Appointment date: " + aptDate + " is not a valid calendar date.");
                     continue;
-                } else if (date.equals(currentDate) || date.equals(yesterDate)) {  //yesterday?
+                } else if (date.compareTo(currentDate) <= 0) {  //yesterday?
                     System.out.println("Appointment date: " + aptDate + " is today or a date before today.");
                     continue;
                 } else if (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) {  //weekend?
