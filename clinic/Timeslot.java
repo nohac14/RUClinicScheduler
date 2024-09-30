@@ -36,6 +36,19 @@ public enum Timeslot {
         }
     }
 
+    public int getSlotNumber() {
+        switch (this) {
+            case SLOT1: return 1;
+            case SLOT2: return 2;
+            case SLOT3: return 3;
+            case SLOT4: return 4;
+            case SLOT5: return 5;
+            case SLOT6: return 6;
+            default: return -1; // Invalid slot
+        }
+    }
+
+
     // Getter for hour
     public int getHour() {
         return hour;

@@ -17,13 +17,11 @@ public class Scheduler {
         boolean running = true;
 
         while (running) {
-            //System.out.print(">> "); //Input line for user
+            //System.out.print(">> "); //Input line for user (delete upon finishing)
             String input = scanner.nextLine().trim(); // User input + trims any whitespace
-
             if (input.isEmpty()) {  //If the user presses enter (or nothing)
                 continue;
             }
-
             //parsing the input
             StringTokenizer tokenizer = new StringTokenizer(input, ",");
             String command = tokenizer.nextToken();                          // "S"
@@ -352,33 +350,33 @@ public class Scheduler {
                 }
                 System.out.println("** end of list **");
             } else if (command.equals("PP")) {
-            // Check if there are any appointments to display
-            if (appointmentCount == 0) {
-                System.out.println("The schedule calendar is empty.");
-                continue;
-            }
+                // Check if there are any appointments to display
+                if (appointmentCount == 0) {
+                    System.out.println("The schedule calendar is empty.");
+                    continue;
+                }
 
-            // Manual Bubble Sort to sort the appointments by patient last name, first name, DOB, appointment date, and time
-            for (int i = 0; i < appointmentCount - 1; i++) {
-                for (int j = 0; j < appointmentCount - i - 1; j++) {
-                    // Compare two consecutive appointments using the compareTo() method in Appointment class
-                    if (appointments[j].compareTo(appointments[j + 1]) > 0) {
-                        // Swap appointments[j] and appointments[j + 1]
-                        Appointment temp = appointments[j];
-                        appointments[j] = appointments[j + 1];
-                        appointments[j + 1] = temp;
+                // Manual Bubble Sort to sort the appointments by patient last name, first name, DOB, appointment date, and time
+                for (int i = 0; i < appointmentCount - 1; i++) {
+                    for (int j = 0; j < appointmentCount - i - 1; j++) {
+                        // Compare two consecutive appointments using the compareTo() method in Appointment class
+                        if (appointments[j].compareTo(appointments[j + 1]) > 0) {
+                            // Swap appointments[j] and appointments[j + 1]
+                            Appointment temp = appointments[j];
+                            appointments[j] = appointments[j + 1];
+                            appointments[j + 1] = temp;
+                        }
                     }
                 }
-            }
 
-            // Display the sorted appointments
-            System.out.println("\n** Appointments ordered by patient/date/time **");
-            for (int i = 0; i < appointmentCount; i++) {
-                System.out.println(appointments[i].toString());
-                // Example format: 12/11/2024 10:45 AM Jane Doe 5/1/1996 [PATEL, BRIDGEWATER, Somerset 08807, FAMILY]
-            }
-            System.out.println("** end of list **");
-        } else if (command.equals("PL")) {
+                // Display the sorted appointments
+                System.out.println("\n** Appointments ordered by patient/date/time **");
+                for (int i = 0; i < appointmentCount; i++) {
+                    System.out.println(appointments[i].toString());
+                    // Example format: 12/11/2024 10:45 AM Jane Doe 5/1/1996 [PATEL, BRIDGEWATER, Somerset 08807, FAMILY]
+                }
+                System.out.println("** end of list **");
+            } else if (command.equals("PL")) {
                 // Check if there are any appointments to display
                 if (appointmentCount == 0) {
                     System.out.println("The schedule calendar is empty.");
