@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="06d397c6-a2b7-46b3-9721-afa06b26e149" name="Changes" comment="Added the S command to Scheduler, added code to the provider and timeSlot class, and edited some small details elsewhere">
-      <change beforePath="$PROJECT_DIR$/clinic/Appointment.java" beforeDir="false" afterPath="$PROJECT_DIR$/clinic/Appointment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clinic/Scheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/clinic/Scheduler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/RUClinicScheduler/clinic/Scheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/RUClinicScheduler/clinic/Scheduler.class" afterDir="false" />
-    </list>
+    <list default="true" id="06d397c6-a2b7-46b3-9721-afa06b26e149" name="Changes" comment="Finished PL, PS, PA and PP&#10;Code finished" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -132,7 +128,8 @@
       <workItem from="1726763902021" duration="1530000" />
       <workItem from="1727290092376" duration="139000" />
       <workItem from="1727358112399" duration="26341000" />
-      <workItem from="1727646836591" duration="3732000" />
+      <workItem from="1727646836591" duration="15333000" />
+      <workItem from="1727712691695" duration="485000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <option name="closed" value="true" />
@@ -214,7 +211,31 @@
       <option name="project" value="LOCAL" />
       <updated>1727641397827</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Added C and R commands. Passes all test cases">
+      <option name="closed" value="true" />
+      <created>1727653508099</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1727653508099</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Finished PL, PS, PA and PP&#10;Code finished">
+      <option name="closed" value="true" />
+      <created>1727675611498</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1727675611498</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Finished PL, PS, PA and PP&#10;Code finished">
+      <option name="closed" value="true" />
+      <created>1727675653288</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1727675653288</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -268,6 +289,8 @@
     <MESSAGE value="More terminal options" />
     <MESSAGE value="test cases added; basci script added (penis)" />
     <MESSAGE value="Added the S command to Scheduler, added code to the provider and timeSlot class, and edited some small details elsewhere" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added the S command to Scheduler, added code to the provider and timeSlot class, and edited some small details elsewhere" />
+    <MESSAGE value="Added C and R commands. Passes all test cases" />
+    <MESSAGE value="Finished PL, PS, PA and PP&#10;Code finished" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finished PL, PS, PA and PP&#10;Code finished" />
   </component>
 </project>

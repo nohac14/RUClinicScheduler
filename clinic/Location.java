@@ -1,12 +1,12 @@
 package clinic;
 
 public enum Location {
-    BRIDGEWATER("Bridgewater", "Somerset", "08807"),
-    EDISON("Edison", "Middlesex", "08817"),
-    PISCATAWAY("Piscataway", "Middlesex", "08854"),
-    PRINCETON("Princeton", "Mercer", "08542"),
-    MORRISTOWN("Morristown", "Morris", "07960"),
-    CLARK("Clark", "Union", "07066");
+    BRIDGEWATER("BRIDGEWATER", "Somerset", "08807"),
+    EDISON("EDISON", "Middlesex", "08817"),
+    PISCATAWAY("PISCATAWAY", "Middlesex", "08854"),
+    PRINCETON("PRINCETON", "Mercer", "08542"),
+    MORRISTOWN("MORRISTOWN", "Morris", "07960"),
+    CLARK("CLARK", "Union", "07066");
 
     private final String city;
     private final String county;
