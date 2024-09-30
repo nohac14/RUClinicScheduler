@@ -315,7 +315,15 @@ public class Scheduler {
 
                         // Step 2: Compare by timeslot if the dates are the same
                         if (dateComparison == 0) {
-                            int timeslotComparison = appointments[j].getTimeslot().compareTo(appointments[j + 1].getTimeslot());
+                            Timeslot slot1 = appointments[j].getTimeslot();
+                            Timeslot slot2 = appointments[j + 1].getTimeslot();
+
+                            // Compare timeslot by hour, then by minute
+                            int timeslotComparison = Integer.compare(slot1.getHour(), slot2.getHour());
+                            if (timeslotComparison == 0) {
+                                timeslotComparison = Integer.compare(slot1.getMinute(), slot2.getMinute());
+                            }
+
                             if (timeslotComparison > 0) {
                                 Appointment temp = appointments[j];
                                 appointments[j] = appointments[j + 1];
@@ -324,11 +332,13 @@ public class Scheduler {
                             }
 
                             // Step 3: Compare by provider name if the dates and timeslots are the same
-                            int providerComparison = appointments[j].getProvider().name().compareTo(appointments[j + 1].getProvider().name());
-                            if (providerComparison > 0) {
-                                Appointment temp = appointments[j];
-                                appointments[j] = appointments[j + 1];
-                                appointments[j + 1] = temp;
+                            if (timeslotComparison == 0) {
+                                int providerComparison = appointments[j].getProvider().name().compareTo(appointments[j + 1].getProvider().name());
+                                if (providerComparison > 0) {
+                                    Appointment temp = appointments[j];
+                                    appointments[j] = appointments[j + 1];
+                                    appointments[j + 1] = temp;
+                                }
                             }
                         }
                     }
