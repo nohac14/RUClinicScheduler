@@ -426,65 +426,56 @@ public class testModular {
     }
 
     private void printBillingStatements() {
-        // Check if there are any appointments to bill
         if (appointmentCount == 0) {
             System.out.println("No appointments found to bill.");
             return;
         }
 
-        // Sort appointments by patient (last name, first name, date of birth)
         sortAppointmentsByPatient();
-
-        // Display billing statements
         System.out.println("\n** Billing statement ordered by patient **");
 
-        int index = 1;
-        int totalAmountDue = 0;
+        int index = 1, totalAmountDue = 0;
         for (int i = 0; i < appointmentCount; i++) {
             Appointment currentAppointment = appointments[i];
-            Provider provider = currentAppointment.getProvider();
-            Profile patient = currentAppointment.getPatient();
+            totalAmountDue += calculateCharge(currentAppointment.getProvider());
 
-            // Determine the charge based on the provider's specialty
-            int charge = 0;
-            switch (provider.getSpecialty()) {
-                case FAMILY:
-                    charge = 250;
-                    break;
-                case PEDIATRICIAN:
-                    charge = 300;
-                    break;
-                case ALLERGIST:
-                    charge = 350;
-                    break;
-                // Add more specialties as needed
-                default:
-                    charge = 200;  // Default charge if the specialty is not specified
-                    break;
-            }
-
-            // Accumulate charges for the current patient
-            totalAmountDue += charge;
-
-            // Check if next appointment belongs to a different patient or it's the last appointment
-            boolean isLastAppointment = (i == appointmentCount - 1);
-            boolean nextIsDifferentPatient = !isLastAppointment && !appointments[i + 1].getPatient().equals(currentAppointment.getPatient());
-
-            // Print the statement for the current patient when a different patient is found or it's the last appointment
-            if (nextIsDifferentPatient || isLastAppointment) {
-                System.out.printf("(%d) %s %s %s [amount due: $%,.2f]\n",
-                        index, patient.getFname(), patient.getLname(), patient.getDob().toString(), (double) totalAmountDue);
-                index++;
-                totalAmountDue = 0;  // Reset for the next patient
+            if (isNewPatient(i, currentAppointment) || isLastAppointment(i)) {
+                printPatientStatement(index++, currentAppointment.getPatient(), totalAmountDue);
+                totalAmountDue = 0;
             }
         }
 
         System.out.println("** end of list **");
+        resetAppointments();
+    }
 
-        // Code to empty and reset the appointment list after billing
+    private int calculateCharge(Provider provider) {
+        switch (provider.getSpecialty()) {
+            case FAMILY: return 250;
+            case PEDIATRICIAN: return 300;
+            case ALLERGIST: return 350;
+            default: return 200;
+        }
+    }
+
+    private boolean isNewPatient(int i, Appointment current) {
+        return i < appointmentCount - 1 && !appointments[i + 1].getPatient().equals(current.getPatient());
+    }
+
+    private boolean isLastAppointment(int i) {
+        return i == appointmentCount - 1;
+    }
+
+    private void printPatientStatement(int index, Profile patient, int totalAmountDue) {
+        System.out.printf("(%d) %s %s %s [amount due: $%,.2f]\n",
+                index, patient.getFname(), patient.getLname(), patient.getDob().toString(), (double) totalAmountDue);
+    }
+
+    private void resetAppointments() {
         for (int i = 0; i < appointmentCount; i++) {
             appointments[i] = null;
         }
         appointmentCount = 0;
     }
+
 }
