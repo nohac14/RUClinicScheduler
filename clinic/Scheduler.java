@@ -335,12 +335,12 @@ public class Scheduler {
                 }
 
                 // Display the sorted appointments
-                System.out.println("** Appointments ordered by date/time/provider **");
+                System.out.println("\n** Appointments ordered by date/time/provider **");
                 for (int i = 0; i < appointmentCount; i++) {
                     System.out.println(appointments[i].toString());
                     // Example format: 12/11/2024 10:45 AM Jane Doe 5/1/1996 [PATEL, BRIDGEWATER, Somerset 08807, FAMILY]
                 }
-                System.out.println("** end of list **\n");
+                System.out.println("** end of list **");
             } else if (command.equals("PP")) {
             // Check if there are any appointments to display
             if (appointmentCount == 0) {
@@ -362,12 +362,12 @@ public class Scheduler {
             }
 
             // Display the sorted appointments
-            System.out.println("** Appointments ordered by patient/date/time **");
+            System.out.println("\n** Appointments ordered by patient/date/time **");
             for (int i = 0; i < appointmentCount; i++) {
                 System.out.println(appointments[i].toString());
                 // Example format: 12/11/2024 10:45 AM Jane Doe 5/1/1996 [PATEL, BRIDGEWATER, Somerset 08807, FAMILY]
             }
-            System.out.println("** end of list **\n");
+            System.out.println("** end of list **");
         } else if (command.equals("PL")) {
                 // Check if there are any appointments to display
                 if (appointmentCount == 0) {
@@ -389,12 +389,12 @@ public class Scheduler {
                 }
 
                 // Display the sorted appointments
-                System.out.println("** Appointments ordered by county/date/time **");
+                System.out.println("\n** Appointments ordered by county/date/time **");
                 for (int i = 0; i < appointmentCount; i++) {
                     System.out.println(appointments[i].toString());
                     // Example format: 12/11/2024 10:45 AM Jane Doe 5/1/1996 [PATEL, BRIDGEWATER, Somerset 08807, FAMILY]
                 }
-                System.out.println("** end of list **\n");
+                System.out.println("** end of list **");
             } else if (command.equals("PS")) {
                 // Check if there are any appointments to bill (assuming all completed appointments)
                 if (appointmentCount == 0) {
@@ -415,7 +415,7 @@ public class Scheduler {
                 }
 
                 // Display billing statements
-                System.out.println("** Billing statement ordered by patient **");
+                System.out.println("\n** Billing statement ordered by patient **");
 
                 int index = 1;
                 int totalAmountDue = 0;
@@ -447,7 +447,7 @@ public class Scheduler {
 
                     // Print the statement for the current patient when a different patient is found or it's the last appointment
                     if (nextIsDifferentPatient || isLastAppointment) {
-                        System.out.printf("(%d) %s %s [%s] - amount due: $%,.2f%n",
+                        System.out.printf("(%d) %s %s %s [amount due: $%,.2f]\n",
                                 index, patient.getFname(), patient.getLname(), patient.getDob().toString(), (double) totalAmountDue);
                         index++;
                         totalAmountDue = 0;  // Reset for the next patient
