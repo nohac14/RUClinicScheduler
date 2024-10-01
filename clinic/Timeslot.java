@@ -1,5 +1,20 @@
 package clinic;
 
+/**
+ * The Timeslot enum represents specific time slots for appointments in a clinic.
+ * Each timeslot is defined by an hour and minute value, and the available time slots are:
+ * - SLOT1: 9:00 AM
+ * - SLOT2: 10:45 AM
+ * - SLOT3: 11:15 AM
+ * - SLOT4: 1:30 PM
+ * - SLOT5: 3:00 PM
+ * - SLOT6: 4:15 PM
+ *
+ * The enum provides methods to get a timeslot by number, retrieve the timeslot's number,
+ * and format the timeslot as a string in "HH:MM AM/PM" format.
+ *
+ * @author studentName
+ */
 public enum Timeslot {
     SLOT1(9, 0),   // 9:00 AM
     SLOT2(10, 45), // 10:45 AM
@@ -11,12 +26,23 @@ public enum Timeslot {
     private final int hour;
     private final int minute;
 
-    // Constructor
+    /**
+     * Constructs a Timeslot with the specified hour and minute.
+     *
+     * @param hour   the hour of the timeslot (24-hour format).
+     * @param minute the minute of the timeslot.
+     */
     Timeslot(int hour, int minute) {
         this.hour = hour;
         this.minute = minute;
     }
 
+    /**
+     * Gets a Timeslot enum by the provided timeslot number (1-6).
+     *
+     * @param timeSlot the timeslot number.
+     * @return the Timeslot enum corresponding to the number, or null if invalid.
+     */
     public static Timeslot getTimeslotByNumber(int timeSlot) {
         switch (timeSlot) {
             case 1:
@@ -36,6 +62,11 @@ public enum Timeslot {
         }
     }
 
+    /**
+     * Gets the number corresponding to this timeslot (1-6).
+     *
+     * @return the timeslot number.
+     */
     public int getSlotNumber() {
         switch (this) {
             case SLOT1: return 1;
@@ -48,18 +79,29 @@ public enum Timeslot {
         }
     }
 
-
-    // Getter for hour
+    /**
+     * Gets the hour of the timeslot in 24-hour format.
+     *
+     * @return the hour of the timeslot.
+     */
     public int getHour() {
         return hour;
     }
 
-    // Getter for minute
+    /**
+     * Gets the minute of the timeslot.
+     *
+     * @return the minute of the timeslot.
+     */
     public int getMinute() {
         return minute;
     }
 
-    // Override toString() to return the time in HH:MM AM/PM format
+    /**
+     * Returns a string representation of the timeslot in "HH:MM AM/PM" format.
+     *
+     * @return a formatted string representing the timeslot.
+     */
     @Override
     public String toString() {
         String period = (hour < 12) ? "AM" : "PM";

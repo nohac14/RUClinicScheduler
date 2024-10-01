@@ -1,16 +1,34 @@
 package clinic;
 
+/**
+ * The Patient class represents a patient in the clinic system.
+ * It stores the patient's profile and a linked list of completed visits (appointments).
+ * The class supports calculating total charges for the patient's visits.
+ * It also implements the Comparable interface for comparing patients by profile.
+ *
+ * @author Jonas Lazebnik, Arjun Anand
+ */
 public class Patient implements Comparable<Patient> {
     private Profile profile;  // Profile of the patient (first name, last name, date of birth)
     private Visit visits;     // Head of the linked list of visits (completed appointments)
 
-    // Constructor
+    /**
+     * Constructs a new Patient with the specified profile.
+     * Initially, the patient has no completed visits.
+     *
+     * @param profile the profile of the patient.
+     */
     public Patient(Profile profile) {
         this.profile = profile;
         this.visits = null;  // Initially, there are no completed visits
     }
 
-    // Override equals() method
+    /**
+     * Compares this Patient object with another object for equality based on their profiles.
+     *
+     * @param obj the object to compare with this patient.
+     * @return true if the profiles are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -23,19 +41,32 @@ public class Patient implements Comparable<Patient> {
         return profile.equals(other.profile);  // Compare profiles for equality
     }
 
-    // Override toString() method
+    /**
+     * Returns a string representation of the patient's profile.
+     *
+     * @return a string representation of the patient's profile.
+     */
     @Override
     public String toString() {
         return profile.toString();  // Display the patient's profile details
     }
 
-    // Override compareTo() method to compare two patients by profile
+    /**
+     * Compares this Patient object with another Patient object by their profiles.
+     *
+     * @param other the other patient to compare with.
+     * @return a negative integer, zero, or a positive integer as this patient's profile is less than, equal to, or greater than the specified patient's profile.
+     */
     @Override
     public int compareTo(Patient other) {
         return this.profile.compareTo(other.profile);  // Delegate to Profile's compareTo method
     }
 
-    // Method to calculate the total charge by traversing the linked list of visits
+    /**
+     * Calculates the total charge for the patient's completed visits by traversing the linked list of visits.
+     *
+     * @return the total charge for the patient's visits.
+     */
     public int charge() {
         int totalCharge = 0;
         Visit currentVisit = visits;  // Start from the head of the linked list
@@ -49,23 +80,40 @@ public class Patient implements Comparable<Patient> {
         return totalCharge;
     }
 
-    // Method to add a visit to the linked list of visits
+    /**
+     * Adds a new visit (appointment) to the patient's linked list of visits.
+     *
+     * @param appointment the appointment to add as a visit.
+     */
     public void addVisit(Appointment appointment) {
         Visit newVisit = new Visit(appointment);
         newVisit.setNext(visits);  // Insert the new visit at the beginning of the list
         visits = newVisit;         // Update the head to the new visit
     }
 
-    // Getters (if needed for other parts of the code)
+    /**
+     * Gets the profile of the patient.
+     *
+     * @return the patient's profile.
+     */
     public Profile getProfile() {
         return profile;
     }
 
+    /**
+     * Gets the linked list of visits (appointments) for the patient.
+     *
+     * @return the head of the linked list of visits.
+     */
     public Visit getVisits() {
         return visits;
     }
 
-    // Testbed main() method for testing the charge() method
+    /**
+     * Testbed main method to test the functionality of the Patient class, specifically the charge calculation.
+     *
+     * @param args the command-line arguments.
+     */
     public static void main(String[] args) {
         // Create some sample data
         Profile profile = new Profile("John", "Doe", new Date(12, 13, 1989));

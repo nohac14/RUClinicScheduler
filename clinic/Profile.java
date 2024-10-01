@@ -1,31 +1,62 @@
 package clinic;
 
+/**
+ * The Profile class represents the profile of a patient, which includes the patient's first name, last name, and date of birth.
+ * It implements the Comparable interface, allowing profiles to be compared based on last name, first name, and date of birth.
+ *
+ * @author Jonas Lazebnik, Arjun Anand
+ */
 public class Profile implements Comparable<Profile> {
     private String fname;  // First name of the patient
     private String lname;  // Last name of the patient
     private Date dob;      // Date of birth of the patient
 
-    // Constructor
+    /**
+     * Constructs a Profile object with the specified first name, last name, and date of birth.
+     *
+     * @param fname the first name of the patient.
+     * @param lname the last name of the patient.
+     * @param dob   the date of birth of the patient.
+     */
     public Profile(String fname, String lname, Date dob) {
         this.fname = fname;
         this.lname = lname;
         this.dob = dob;
     }
 
-    // Getters
+    /**
+     * Gets the first name of the patient.
+     *
+     * @return the first name of the patient.
+     */
     public String getFname() {
         return fname;
     }
 
+    /**
+     * Gets the last name of the patient.
+     *
+     * @return the last name of the patient.
+     */
     public String getLname() {
         return lname;
     }
 
+    /**
+     * Gets the date of birth of the patient.
+     *
+     * @return the date of birth of the patient.
+     */
     public Date getDob() {
         return dob;
     }
 
-    // Override equals() method
+    /**
+     * Compares this Profile object with another object for equality based on the first name, last name, and date of birth.
+     *
+     * @param obj the object to compare with this profile.
+     * @return true if the first name, last name, and date of birth are equal; false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -38,12 +69,23 @@ public class Profile implements Comparable<Profile> {
         return fname.equals(other.fname) && lname.equals(other.lname) && dob.equals(other.dob);
     }
 
-    // Override toString() method
+    /**
+     * Returns a string representation of the Profile in the format "FirstName LastName DOB".
+     *
+     * @return a formatted string representing the profile.
+     */
     @Override
     public String toString() {
         return fname + " " + lname + " " + dob.toString();  // Format: FirstName LastName DOB
     }
 
+    /**
+     * Compares this Profile object with another Profile object for ordering.
+     * Comparison is done based on last name, first name, and date of birth, in that order.
+     *
+     * @param other the other profile to compare to.
+     * @return a negative integer, zero, or a positive integer as this profile is less than, equal to, or greater than the specified profile.
+     */
     @Override
     public int compareTo(Profile other) {
         // Step 1: Compare last names
@@ -62,7 +104,11 @@ public class Profile implements Comparable<Profile> {
         return Integer.compare(this.dob.compareTo(other.dob), 0);  // Compare dates directly
     }
 
-
+    /**
+     * Testbed main method to test the functionality of the Profile class, specifically the compareTo method.
+     *
+     * @param args the command-line arguments.
+     */
     public static void main(String[] args) {
         // Create profiles for test cases
         Profile p1 = new Profile("John", "Doe", new Date(12, 13, 1989));   // Profile 1

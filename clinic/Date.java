@@ -2,6 +2,13 @@ package clinic;
 
 import java.util.Calendar;
 
+/**
+ * Represents a Date with year, month, and day.
+ * This class provides methods to validate the date and determine leap years.
+ * It implements the Comparable interface to allow comparison between Date objects.
+ *
+ * @author Jonas Lazebnik, Arjun Anand
+ */
 public class Date implements Comparable<Date> {
     private int year;
     private int month;
@@ -12,27 +19,53 @@ public class Date implements Comparable<Date> {
     public static final int CENTENNIAL = 100;
     public static final int QUARTERCENTENNIAL = 400;
 
-    // Constructor
+    /**
+     * Constructs a Date object with the specified month, day, and year.
+     *
+     * @param month the month of the date.
+     * @param day   the day of the date.
+     * @param year  the year of the date.
+     */
     public Date(int month, int day, int year) {
         this.month = month;
         this.day = day;
         this.year = year;
     }
 
-    // Getter methods
+    /**
+     * Gets the year of the date.
+     *
+     * @return the year of the date.
+     */
     public int getYear() {
         return year;
     }
 
+    /**
+     * Gets the month of the date.
+     *
+     * @return the month of the date.
+     */
     public int getMonth() {
         return month;
     }
 
+    /**
+     * Gets the day of the date.
+     *
+     * @return the day of the date.
+     */
     public int getDay() {
         return day;
     }
 
-    // Method to check if the date is valid
+    /**
+     * Checks if the date is valid according to the month, day, and year.
+     * A date is valid if the year is after 1900, the month is between January and December,
+     * and the day is valid for the given month, considering leap years for February.
+     *
+     * @return true if the date is valid, false otherwise.
+     */
     public boolean isValid() {
         // Check if year is before 1900
         if (year < 1900) {
@@ -83,7 +116,11 @@ public class Date implements Comparable<Date> {
         return true;
     }
 
-    // Method to determine if the year is a leap year
+    /**
+     * Determines if the year is a leap year.
+     *
+     * @return true if the year is a leap year, false otherwise.
+     */
     private boolean isLeapYear() {
         if (year % QUADRENNIAL == 0) {
             if (year % CENTENNIAL == 0) {
@@ -94,7 +131,12 @@ public class Date implements Comparable<Date> {
         return false;
     }
 
-    // Override the equals() method
+    /**
+     * Compares this date to another date for equality.
+     *
+     * @param obj the object to compare with this date.
+     * @return true if the year, month, and day are the same; false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -107,7 +149,12 @@ public class Date implements Comparable<Date> {
         return this.year == other.year && this.month == other.month && this.day == other.day;
     }
 
-    // Override the compareTo() method
+    /**
+     * Compares this date with another date based on year, month, and day.
+     *
+     * @param other the other date to compare with this date.
+     * @return a negative integer, zero, or a positive integer as this date is less than, equal to, or greater than the specified date.
+     */
     @Override
     public int compareTo(Date other) {
         if (this.year != other.year) {
@@ -119,13 +166,21 @@ public class Date implements Comparable<Date> {
         }
     }
 
-    // Override the toString() method
+    /**
+     * Returns a string representation of the date in MM/DD/YYYY format.
+     *
+     * @return a string representing the date in MM/DD/YYYY format.
+     */
     @Override
     public String toString() {
-        return month + "/" + day + "/" + year; // Format MM/DD/YYYY
+        return month + "/" + day + "/" + year;
     }
 
-    // Testbed main() method for testing the isValid() method
+    /**
+     * A testbed main() method to test the isValid() method with different date scenarios.
+     *
+     * @param args the command-line arguments.
+     */
     public static void main(String[] args) {
         // Test Case 1: Invalid date (year before 1900)
         Date date1 = new Date(11, 21, 800);
@@ -147,7 +202,7 @@ public class Date implements Comparable<Date> {
         Date date5 = new Date(10, 15, 2024);
         System.out.println("Test Case 5: " + date5.isValid() + " (Expected: true)");
 
-        // Test Case 6: Valid date (October 15, 2024)
+        // Test Case 6: Invalid date (April 1, 2030)
         Date date6 = new Date(4, 1, 2030);
         System.out.println("Test Case 6: " + date6.isValid() + " (Expected: false)");
     }

@@ -1,18 +1,31 @@
 package clinic;
 
+/**
+ * A list that holds and manages Appointment objects. The list supports dynamic resizing,
+ * searching, sorting, and basic operations like adding and removing appointments.
+ *
+ * @author Jonas Lazebnik, Arjun Anand
+ */
 public class List {
     private Appointment[] appointments;  // Array to hold Appointment objects
     private int size;  // Number of appointments in the array
     private static final int INITIAL_CAPACITY = 4;  // Initial capacity of the array
     private static final int NOT_FOUND = -1;  // Constant for when an appointment is not found
 
-    // Constructor to initialize the list
+    /**
+     * Constructor to initialize the list with an initial capacity of appointments.
+     */
     public List() {
         this.appointments = new Appointment[INITIAL_CAPACITY];
         this.size = 0;
     }
 
-    // Helper method to find the index of an appointment
+    /**
+     * Finds the index of a given appointment in the list.
+     *
+     * @param appointment the appointment to search for.
+     * @return the index of the appointment if found, or -1 if not found.
+     */
     private int find(Appointment appointment) {
         for (int i = 0; i < size; i++) {
             if (appointments[i].equals(appointment)) {
@@ -22,19 +35,30 @@ public class List {
         return NOT_FOUND;  // If appointment is not found
     }
 
-    // Helper method to grow the array by 4 when it's full
+    /**
+     * Expands the size of the appointments array by 4 when it's full.
+     */
     private void grow() {
         Appointment[] newAppointments = new Appointment[appointments.length + 4];
         System.arraycopy(appointments, 0, newAppointments, 0, appointments.length);
         appointments = newAppointments;
     }
 
-    // Check if the appointment exists in the list
+    /**
+     * Checks if a given appointment exists in the list.
+     *
+     * @param appointment the appointment to check.
+     * @return true if the appointment exists in the list, false otherwise.
+     */
     public boolean contains(Appointment appointment) {
         return find(appointment) != NOT_FOUND;
     }
 
-    // Add a new appointment to the end of the array
+    /**
+     * Adds a new appointment to the list. Expands the list if the array is full.
+     *
+     * @param appointment the appointment to add.
+     */
     public void add(Appointment appointment) {
         if (size >= appointments.length) {
             grow();  // Grow the array if it's full
@@ -42,7 +66,12 @@ public class List {
         appointments[size++] = appointment;  // Add the appointment and increase size
     }
 
-    // Remove an appointment from the array (replaces it with the last one)
+    /**
+     * Removes a specified appointment from the list, replacing it with the last appointment
+     * in the list to maintain contiguous data.
+     *
+     * @param appointment the appointment to remove.
+     */
     public void remove(Appointment appointment) {
         int index = find(appointment);
         if (index != NOT_FOUND) {
@@ -52,7 +81,10 @@ public class List {
         }
     }
 
-    // Print appointments ordered by patient profile (last name, first name, DOB) and date/timeslot
+    /**
+     * Prints the appointments sorted by patient profile (last name, first name, DOB),
+     * followed by date and timeslot.
+     */
     public void printByPatient() {
         sortByPatient();
         for (int i = 0; i < size; i++) {
@@ -60,7 +92,10 @@ public class List {
         }
     }
 
-    // Print appointments ordered by county, then date/timeslot
+    /**
+     * Prints the appointments sorted by the provider's location (county),
+     * followed by date and timeslot.
+     */
     public void printByLocation() {
         sortByLocation();
         for (int i = 0; i < size; i++) {
@@ -68,7 +103,9 @@ public class List {
         }
     }
 
-    // Print appointments ordered by date/timeslot, then provider name
+    /**
+     * Prints the appointments sorted by date and timeslot, followed by the provider's name.
+     */
     public void printByAppointment() {
         sortByAppointment();
         for (int i = 0; i < size; i++) {
@@ -76,7 +113,10 @@ public class List {
         }
     }
 
-    // In-place sorting by patient profile (last name, first name, DOB), then date/timeslot
+    /**
+     * Sorts the appointments in place by patient profile (last name, first name, DOB),
+     * followed by date and timeslot.
+     */
     private void sortByPatient() {
         for (int i = 0; i < size - 1; i++) {
             for (int j = 0; j < size - i - 1; j++) {
@@ -89,7 +129,9 @@ public class List {
         }
     }
 
-    // In-place sorting by county, then date/timeslot
+    /**
+     * Sorts the appointments in place by provider's county, followed by date and timeslot.
+     */
     private void sortByLocation() {
         for (int i = 0; i < size - 1; i++) {
             for (int j = 0; j < size - i - 1; j++) {
@@ -104,7 +146,9 @@ public class List {
         }
     }
 
-    // In-place sorting by date/timeslot, then provider's last name
+    /**
+     * Sorts the appointments in place by date and timeslot, followed by the provider's last name.
+     */
     private void sortByAppointment() {
         for (int i = 0; i < size - 1; i++) {
             for (int j = 0; j < size - i - 1; j++) {
@@ -117,7 +161,12 @@ public class List {
         }
     }
 
-    // Helper method to swap two appointments in the array
+    /**
+     * Helper method to swap two appointments in the appointments array.
+     *
+     * @param i index of the first appointment.
+     * @param j index of the second appointment.
+     */
     private void swap(int i, int j) {
         Appointment temp = appointments[i];
         appointments[i] = appointments[j];

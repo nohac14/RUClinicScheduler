@@ -125,8 +125,6 @@ public class testModular {
         return true; // Provider is available
     }
 
-    // Handler for rescheduling an appointment (R)
-    // Handler for rescheduling an appointment (R)
     private void handleRescheduleCommand(StringTokenizer tokenizer) {
         String aptDate = tokenizer.nextToken();       // Appointment date
         String oldTimeSlot = tokenizer.nextToken();   // Old timeslot
@@ -145,19 +143,24 @@ public class testModular {
         // Step 1: Search for the existing appointment
         Appointment currentAppointment = findAppointment(date, originalTimeslot, patient);
         if (currentAppointment == null) {
-            System.out.println(aptDate + " " + originalTimeslot + " " + fName + " " + lName + " " + dob + " does not exist.");
+            System.out.println(aptDate + " " + originalTimeslot.toString() + " " + fName + " " + lName + " " + dob + " does not exist.");
             return; // If no matching appointment was found, exit
         }
 
-        // Step 2: Check if the new timeslot is valid
+        // Step 2: Validate the timeslots (old != new)
         if (newSelectedTimeslot == null) {
             System.out.println(newTimeSlot + " is not a valid time slot.");
             return; // Invalid timeslot, exit
         }
 
+        if (originalTimeslot.equals(newSelectedTimeslot)) {
+            System.out.println("New timeslot is the same as the original timeslot. No changes made.");
+            return; // Exit if the same timeslot was selected
+        }
+
         // Step 3: Check if the new timeslot is available for the provider
         Provider provider = currentAppointment.getProvider();
-        if (isProviderUnavailable(provider, date, newSelectedTimeslot)) {
+        if (!isProviderAvailable(provider, date, newSelectedTimeslot)) {
             System.out.println(provider.toString() + " is not available at slot " + newSelectedTimeslot.getSlotNumber() + ".");
             return; // Exit if provider is unavailable
         }
@@ -323,6 +326,7 @@ public class testModular {
         }
         return false; // Provider is available
     }
+
     private void finalizeAppointment(Date date, Timeslot timeslot, Profile patient, Provider provider) {
         if (appointmentCount < MAX_APPOINTMENTS) {
             Appointment newAppointment = new Appointment(date, timeslot, patient, provider);
