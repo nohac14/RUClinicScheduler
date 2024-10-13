@@ -8,10 +8,10 @@ package clinic;
  * @author Jonas Lazebnik, Arjun Anand
  */
 public class Appointment implements Comparable<Appointment> {
-    private Date date;
-    private Timeslot timeslot;
-    private Profile patient;
-    private Provider provider;
+    protected Date date;
+    protected Timeslot timeslot;
+    protected Person patient;
+    protected Person provider;
 
     /**
      * Constructs an Appointment with the specified date, timeslot, patient, and provider.
@@ -21,7 +21,7 @@ public class Appointment implements Comparable<Appointment> {
      * @param patient  the patient for the appointment.
      * @param provider the provider for the appointment.
      */
-    public Appointment(Date date, Timeslot timeslot, Profile patient, Provider provider) {
+    public Appointment(Date date, Timeslot timeslot, Person patient, Person provider) {
         this.date = date;
         this.timeslot = timeslot;
         this.patient = patient;
@@ -51,7 +51,7 @@ public class Appointment implements Comparable<Appointment> {
      *
      * @return the patient of the appointment.
      */
-    public Profile getPatient() {
+    public Person getPatient() {
         return patient;
     }
 
@@ -60,7 +60,7 @@ public class Appointment implements Comparable<Appointment> {
      *
      * @return the provider of the appointment.
      */
-    public Provider getProvider() {
+    public Person getProvider() {
         return provider;
     }
 
@@ -106,11 +106,11 @@ public class Appointment implements Comparable<Appointment> {
                 date.toString(),
                 timeslot.toString(),
                 patient.toString(),
-                provider.name(),
+                provider.getName(),
                 provider.getLocation().getCity(),
                 provider.getLocation().getCounty(),
                 provider.getLocation().getZip(),
-                provider.getSpecialty().name()
+                provider.getSpecialty() // Make sure Person class has the necessary methods
         );
     }
 
