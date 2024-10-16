@@ -1,68 +1,56 @@
 package clinic;
 
-/**
- * The Provider enum represents healthcare providers along with their associated location and specialty.
- * Each provider is associated with a specific Location and a Specialty.
- * The enum also provides methods to retrieve the location and specialty of the provider.
- *
- * @author Jonas Lazebnik, Arjun Anand
- */
-public enum Provider {
-    PATEL(Location.BRIDGEWATER, Specialty.FAMILY),
-    LIM(Location.BRIDGEWATER, Specialty.PEDIATRICIAN),
-    ZIMNES(Location.CLARK, Specialty.FAMILY),
-    HARPER(Location.CLARK, Specialty.FAMILY),
-    KAUR(Location.PRINCETON, Specialty.ALLERGIST),
-    TAYLOR(Location.PISCATAWAY, Specialty.PEDIATRICIAN),
-    RAMESH(Location.MORRISTOWN, Specialty.ALLERGIST),
-    CERAVOLO(Location.EDISON, Specialty.PEDIATRICIAN);
+public abstract class Provider extends Person {
+    private Location location;
+    private Specialty specialty;
 
-    private final Location location;
-    private final Specialty specialty;
-
-    /**
-     * Constructs a Provider enum instance with the specified location and specialty.
-     *
-     * @param location  the location where the provider operates.
-     * @param specialty the specialty of the provider.
-     */
-    Provider(Location location, Specialty specialty) {
+    public Provider(Profile profile, Location location, Specialty specialty) {
+        super(profile);
         this.location = location;
         this.specialty = specialty;
     }
 
-    /**
-     * Returns a string representation of the provider in the format:
-     * "[Provider Name, City, County ZIP, Specialty]".
-     *
-     * @return a formatted string representing the provider.
-     */
-    @Override
-    public String toString() {
-        return String.format("[%s, %s, %s %s, %s]",
-                this.name(), // Provider's name
-                location.getCity(), // City where the provider operates
-                location.getCounty(), // County
-                location.getZip(), // ZIP code
-                specialty.name() // Provider's specialty
-        );
-    }
-
-    /**
-     * Gets the location where the provider operates.
-     *
-     * @return the location of the provider.
-     */
     public Location getLocation() {
         return location;
     }
 
-    /**
-     * Gets the specialty of the provider.
-     *
-     * @return the specialty of the provider.
-     */
     public Specialty getSpecialty() {
         return specialty;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s [%s, %s, %s %s, %s]",
+                super.getProfile().toString(),
+                location.getCity(),
+                location.getCounty(),
+                location.getZip(),
+                specialty.name());
+    }
+
+    public abstract int rate();
+
+    // Method to return a list of all providers
+    public static List<Provider> getAllProviders() {
+        List<Provider> providers = new List<>();
+
+        providers.add(new Doctor(new Profile("John", "Patel", new Date(12, 25, 1970)),
+                Specialty.FAMILY, "12345", Location.BRIDGEWATER));
+        providers.add(new Doctor(new Profile("Emily", "Lim", new Date(3, 4, 1985)),
+                Specialty.PEDIATRICIAN, "23456", Location.BRIDGEWATER));
+        providers.add(new Doctor(new Profile("Paul", "Zimnes", new Date(7, 15, 1980)),
+                Specialty.FAMILY, "34567", Location.CLARK));
+        providers.add(new Doctor(new Profile("Sarah", "Harper", new Date(5, 10, 1978)),
+                Specialty.FAMILY, "45678", Location.CLARK));
+        providers.add(new Doctor(new Profile("Raj", "Kaur", new Date(9, 19, 1982)),
+                Specialty.ALLERGIST, "56789", Location.PRINCETON));
+        providers.add(new Doctor(new Profile("Lucas", "Taylor", new Date(6, 7, 1984)),
+                Specialty.PEDIATRICIAN, "67890", Location.PISCATAWAY));
+        providers.add(new Doctor(new Profile("Amit", "Ramesh", new Date(11, 14, 1979)),
+                Specialty.ALLERGIST, "78901", Location.MORRISTOWN));
+        providers.add(new Doctor(new Profile("Sophia", "Ceravolo", new Date(2, 20, 1983)),
+                Specialty.PEDIATRICIAN, "89012", Location.EDISON));
+
+        return providers;
     }
 }

@@ -100,19 +100,28 @@ public class Appointment implements Comparable<Appointment> {
      *
      * @return a formatted string representing the appointment details.
      */
+    @
     @Override
     public String toString() {
-        return String.format("%s %s %s [%s, %s, %s %s, %s]",
-                date.toString(),
-                timeslot.toString(),
-                patient.toString(),
-                provider.getName(),
-                provider.getLocation().getCity(),
-                provider.getLocation().getCounty(),
-                provider.getLocation().getZip(),
-                provider.getSpecialty() // Make sure Person class has the necessary methods
-        );
+        if (provider instanceof Provider) {  // Ensure provider is of type Provider
+            Provider prov = (Provider) provider;
+            return String.format("%s %s %s [%s, %s, %s %s, %s]",
+                    date.toString(),
+                    timeslot.toString(),
+                    patient.toString(),
+                    prov.getName(),
+                    prov.getLocation().getCity(),
+                    prov.getLocation().getCounty(),
+                    prov.getLocation().getZip(),
+                    prov.getSpecialty());
+        } else {
+            return String.format("%s %s %s [Provider information not available]",
+                    date.toString(),
+                    timeslot.toString(),
+                    patient.toString());
+        }
     }
+
 
     /**
      * Compares this appointment with another appointment based on patient, date, and timeslot.
@@ -142,19 +151,26 @@ public class Appointment implements Comparable<Appointment> {
      * @return a negative integer, zero, or a positive integer as this appointment's county is less than, equal to, or greater than the specified appointment's county.
      */
     public int compareByCounty(Appointment other) {
-        String thisCounty = this.provider.getLocation().getCounty();
-        String otherCounty = other.provider.getLocation().getCounty();
+        if (this.provider instanceof Provider && other.provider instanceof Provider) {
+            Provider thisProvider = (Provider) this.provider;
+            Provider otherProvider = (Provider) other.provider;
 
-        int countyComparison = thisCounty.compareTo(otherCounty);
-        if (countyComparison != 0) {
-            return countyComparison;
+            String thisCounty = thisProvider.getLocation().getCounty();
+            String otherCounty = otherProvider.getLocation().getCounty();
+
+            int countyComparison = thisCounty.compareTo(otherCounty);
+            if (countyComparison != 0) {
+                return countyComparison;
+            }
+
+            int dateComparison = this.date.compareTo(other.date);
+            if (dateComparison != 0) {
+                return dateComparison;
+            }
+
+            return this.timeslot.compareTo(other.timeslot);
+        } else {
+            throw new IllegalArgumentException("One or both providers are not of type Provider.");
         }
-
-        int dateComparison = this.date.compareTo(other.date);
-        if (dateComparison != 0) {
-            return dateComparison;
-        }
-
-        return this.timeslot.compareTo(other.timeslot);
     }
 }

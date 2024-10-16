@@ -8,7 +8,7 @@ package clinic;
  *
  * @author Jonas Lazebnik, Arjun Anand
  */
-public class RunProject1 {
+public class RunProject2 {
 
     /**
      * The main method that starts the clinic scheduling application by creating
@@ -17,6 +17,6 @@ public class RunProject1 {
      * @param args command-line arguments (not used in this application)
      */
     public static void main(String[] args) {
-        new Scheduler().run();
+        new testModular().run();
     }
 }
