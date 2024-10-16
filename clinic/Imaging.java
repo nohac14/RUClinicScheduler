@@ -1,12 +1,8 @@
 package clinic;
 
 /**
- * The Imaging class extends the Appointment class to hold additional data specific to imaging appointments.
- * Adds a Radiology room to the existing appointment details.
- *
- * Inherits date, timeslot, patient, and provider from Appointment.
- *
- * @author studentName
+ * The Imaging class extends the Appointment class to hold additional data for imaging appointments.
+ * This includes the radiology room and the type of imaging service (e.g., XRAY, CATSCAN, ULTRASOUND).
  */
 public class Imaging extends Appointment {
     private Radiology room;
@@ -17,16 +13,16 @@ public class Imaging extends Appointment {
      * @param date     the date of the appointment.
      * @param timeslot the timeslot for the appointment.
      * @param patient  the patient for the appointment.
-     * @param provider the provider for the appointment.
-     * @param room     the radiology room for the imaging appointment.
+     * @param provider the technician handling the imaging.
+     * @param room     the radiology room used for the imaging service.
      */
-    public Imaging(Date date, Timeslot timeslot, Person patient, Person provider, Radiology room) {
+    public Imaging(Date date, Timeslot timeslot, Person patient, Technician provider, Radiology room) {
         super(date, timeslot, patient, provider);
         this.room = room;
     }
 
     /**
-     * Gets the radiology room for this imaging appointment.
+     * Gets the radiology room associated with this imaging appointment.
      *
      * @return the radiology room.
      */
@@ -43,14 +39,12 @@ public class Imaging extends Appointment {
         this.room = room;
     }
 
-    /**
-     * Returns a string representation of the imaging appointment details.
-     * Includes the room in addition to the usual appointment details.
-     *
-     * @return a formatted string representing the imaging appointment details.
-     */
     @Override
     public String toString() {
-        return String.format("%s, Room: %s", super.toString(), room.toString());
+        return String.format("%s %s [%s, %s]",
+                super.toString(),
+                room.toString(),
+                ((Technician) provider).getProfile().getFullName(),
+                room.getRoomType());
     }
 }
