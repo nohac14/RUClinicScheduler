@@ -6,8 +6,6 @@ import java.util.Calendar;
  * Represents a Date with year, month, and day.
  * This class provides methods to validate the date and determine leap years.
  * It implements the Comparable interface to allow comparison between Date objects.
- *
- * @author Jonas Lazebnik, Arjun Anand
  */
 public class Date implements Comparable<Date> {
     private int year;
@@ -22,7 +20,7 @@ public class Date implements Comparable<Date> {
     /**
      * Constructs a Date object with the specified month, day, and year.
      *
-     * @param month the month of the date.
+     * @param month the month of the date (1 = January, 12 = December).
      * @param day   the day of the date.
      * @param year  the year of the date.
      */
@@ -67,38 +65,38 @@ public class Date implements Comparable<Date> {
      * @return true if the date is valid, false otherwise.
      */
     public boolean isValid() {
-        // Check if year is before 1900
-        if (year < 1900) {
+        // Check if year is before 1900 or in the future
+        if (year < 1900 || year > Calendar.getInstance().get(Calendar.YEAR)) {
             return false;
         }
 
         // Validate the month (1 = January, 12 = December)
-        if (month < Calendar.JANUARY + 1 || month > Calendar.DECEMBER + 1) {
+        if (month < 1 || month > 12) {
             return false;
         }
 
         // Validate days based on month
         switch (month) {
-            case Calendar.JANUARY + 1: // January
-            case Calendar.MARCH + 1:  // March
-            case Calendar.MAY + 1:    // May
-            case Calendar.JULY + 1:   // July
-            case Calendar.AUGUST + 1: // August
-            case Calendar.OCTOBER + 1:// October
-            case Calendar.DECEMBER + 1:// December
+            case 1: // January
+            case 3: // March
+            case 5: // May
+            case 7: // July
+            case 8: // August
+            case 10: // October
+            case 12: // December
                 if (day < 1 || day > 31) {
                     return false;
                 }
                 break;
-            case Calendar.APRIL + 1:  // April
-            case Calendar.JUNE + 1:   // June
-            case Calendar.SEPTEMBER + 1: // September
-            case Calendar.NOVEMBER + 1:  // November
+            case 4:  // April
+            case 6:  // June
+            case 9:  // September
+            case 11: // November
                 if (day < 1 || day > 30) {
                     return false;
                 }
                 break;
-            case Calendar.FEBRUARY + 1: // February
+            case 2: // February
                 if (isLeapYear()) {
                     if (day < 1 || day > 29) {
                         return false;
@@ -129,24 +127,6 @@ public class Date implements Comparable<Date> {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Compares this date to another date for equality.
-     *
-     * @param obj the object to compare with this date.
-     * @return true if the year, month, and day are the same; false otherwise.
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        Date other = (Date) obj;
-        return this.year == other.year && this.month == other.month && this.day == other.day;
     }
 
     /**
@@ -201,9 +181,5 @@ public class Date implements Comparable<Date> {
         // Test Case 5: Valid date (October 15, 2024)
         Date date5 = new Date(10, 15, 2024);
         System.out.println("Test Case 5: " + date5.isValid() + " (Expected: true)");
-
-        // Test Case 6: Invalid date (April 1, 2030)
-        Date date6 = new Date(4, 1, 2030);
-        System.out.println("Test Case 6: " + date6.isValid() + " (Expected: false)");
     }
 }

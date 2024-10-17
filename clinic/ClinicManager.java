@@ -121,40 +121,7 @@ public class ClinicManager {
 
 
     // Method to process each command entered by the user
-    // Method to process each command entered by the user
     private void processCommand(String command) {
-        switch (command) {
-            // Handle valid but unimplemented commands related to the schedule
-            case "PA":
-            case "PP":
-            case "PL":
-            case "PS":
-            case "PO":
-            case "PI":
-            case "PC":
-                System.out.println("Schedule calendar is empty.");
-                break;
-
-            // Handle invalid commands (those listed as invalid in the prompt)
-            case "D":
-            case "T":
-            case "R":
-            case "PP":
-            case "PL":
-            case "PA":
-            case "PO":
-            case "PI":
-            case "PC":
-            case "PS":
-            case "P":
-            case "XX":
-                System.out.println("Invalid command!");
-                break;
-
-            // Default case for any other unrecognized input
-            default:
-                System.out.println("Invalid command!");
-                break;
-        }
+        // Command processing logic here
     }
 }

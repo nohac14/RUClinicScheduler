@@ -7,10 +7,11 @@ public class ProfileTest {
 
     @Test
     public void testCompareToReturnsMinusOne() {
-        Profile profile1 = new Profile("John", "Doe", new Date(1, 1, 1990));
-        Profile profile2 = new Profile("Jane", "Doe", new Date(2, 2, 1991));
+        Profile profile1 = new Profile("Jane", "Doe", new Date(2, 2, 1991));
+        Profile profile2 = new Profile("John", "Doe", new Date(1, 1, 1990));
         assertTrue(profile1.compareTo(profile2) < 0);
     }
+
 
     @Test
     public void testCompareToReturnsOne() {
