@@ -69,6 +69,51 @@ public class ClinicManager {
     }
 
     /**
+     * Handles the "D" command to schedule a new office appointment.
+     *
+     * @param tokenizer the tokenizer containing the appointment details.
+     */
+    private void handleOfficeAppointment(StringTokenizer tokenizer) {
+        try {
+            // Parse input values
+            String aptDate = tokenizer.nextToken();
+            String timeSlot = tokenizer.nextToken();
+            String fName = tokenizer.nextToken();
+            String lName = tokenizer.nextToken();
+            String dob = tokenizer.nextToken();
+            String npi = tokenizer.nextToken();
+
+            // Validate date and timeslot
+            Date date = validateDate(aptDate);
+            Timeslot timeslot = validateTimeSlot(timeSlot);
+            if (date == null || timeslot == null) return; // Invalid date or timeslot
+
+            // Validate patient profile
+            Profile patientProfile = new Profile(fName, lName, validateDate(dob));
+
+            // Validate provider by NPI
+            Provider provider = findProviderByNPI(npi);
+            if (provider == null || !isProviderAvailable(provider, date, timeslot)) {
+                System.out.println("Error: Invalid provider or provider not available.");
+                return;
+            }
+
+            // Check for duplicate appointments
+            if (appointmentExists(patientProfile, date, timeslot)) {
+                System.out.println("Error: Duplicate appointment already exists.");
+                return;
+            }
+
+            // Create and add the new appointment
+            Appointment appointment = new Appointment(date, timeslot, new Person(patientProfile), provider);
+            appointments.add(appointment);
+            System.out.println("Office appointment booked successfully!");
+        } catch (Exception e) {
+            System.out.println("Error: Invalid input for office appointment.");
+        }
+    }
+
+    /**
      * Loads the providers from the "providers.txt" file at startup.
      */
     private void loadProvidersFromFile() {
@@ -102,7 +147,7 @@ public class ClinicManager {
                     Technician assignedTechnician = null;  // Assign a technician if available
 
                     // Create the Doctor object
-                    Doctor doctor = new Doctor(profile, specialty, npi, location, assignedTechnician);
+                    Doctor doctor = new Doctor(profile, specialty, npi, location);
                     providers.add(doctor);
 
                 } else if (type.equals("TECHNICIAN")) {
@@ -125,46 +170,6 @@ public class ClinicManager {
             System.out.println("Error: providers.txt not found.");
         } catch (Exception e) {
             System.out.println("Error parsing provider data: " + e.getMessage());
-        }
-    }
-
-
-    /**
-     * Handles the "D" command to schedule a new office appointment.
-     *
-     * @param tokenizer the tokenizer containing the appointment details.
-     */
-    private void handleOfficeAppointment(StringTokenizer tokenizer) {
-        try {
-            String aptDate = tokenizer.nextToken();
-            String timeSlot = tokenizer.nextToken();
-            String fName = tokenizer.nextToken();
-            String lName = tokenizer.nextToken();
-            String dob = tokenizer.nextToken();
-            String npi = tokenizer.nextToken();
-
-            // Parse date and timeslot
-            Date date = parseDate(aptDate);
-            Timeslot timeslot = parseTimeSlot(timeSlot);
-
-            // Create Profile for the patient and wrap it in a Patient object (which is a Person)
-            Profile patientProfile = new Profile(fName, lName, parseDate(dob));
-            Patient patient = new Patient(patientProfile);  // Assuming Patient extends Person
-
-            // Find the provider by NPI
-            Provider provider = findProviderByNPI(npi);
-            if (provider == null || !isProviderAvailable(provider, date, timeslot)) {
-                System.out.println("Error: Invalid provider or provider not available.");
-                return;
-            }
-
-            // Create and add the appointment with the correct types for patient and provider (both are Person)
-            Appointment appointment = new Appointment(date, timeslot, patient, provider);
-            appointments.add(appointment);
-
-            System.out.println("Office appointment booked for " + patient + " with provider " + provider);
-        } catch (Exception e) {
-            System.out.println("Error scheduling office appointment: " + e.getMessage());
         }
     }
 
@@ -308,24 +313,6 @@ public class ClinicManager {
     }
 
     /**
-     * Helper method to find a provider by NPI.
-     *
-     * @param npi the NPI of the provider.
-     * @return the provider object if found, otherwise null.
-     */
-    private Provider findProviderByNPI(String npi) {
-        for (int i = 0; i < providers.size(); i++) {
-            Provider provider = providers.get(i);
-            if (provider.getNpi().equals(npi)) {
-                return provider;
-            }
-        }
-        System.out.println("Provider with NPI " + npi + " not found.");
-        return null;
-    }
-
-
-    /**
      * Helper method to check if a provider is available for the given date and timeslot.
      *
      * @param provider the provider to check.
@@ -399,50 +386,6 @@ public class ClinicManager {
             technicianQueue.add(technician);
         }
         return null;  // No technicians are available
-    }
-    /**
-     * Handles the "D" command to schedule a new office appointment.
-     *
-     * @param tokenizer the tokenizer containing the appointment details.
-     */
-    private void handleOfficeAppointment(StringTokenizer tokenizer) {
-        try {
-            // Parse input values
-            String aptDate = tokenizer.nextToken();
-            String timeSlot = tokenizer.nextToken();
-            String fName = tokenizer.nextToken();
-            String lName = tokenizer.nextToken();
-            String dob = tokenizer.nextToken();
-            String npi = tokenizer.nextToken();
-
-            // Validate date and timeslot
-            Date date = validateDate(aptDate);
-            Timeslot timeslot = validateTimeSlot(timeSlot);
-            if (date == null || timeslot == null) return; // Invalid date or timeslot
-
-            // Validate patient profile
-            Profile patientProfile = new Profile(fName, lName, validateDate(dob));
-
-            // Validate provider by NPI
-            Provider provider = findProviderByNPI(npi);
-            if (provider == null || !isProviderAvailable(provider, date, timeslot)) {
-                System.out.println("Error: Invalid provider or provider not available.");
-                return;
-            }
-
-            // Check for duplicate appointments
-            if (appointmentExists(patientProfile, date, timeslot)) {
-                System.out.println("Error: Duplicate appointment already exists.");
-                return;
-            }
-
-            // Create and add the new appointment
-            Appointment appointment = new Appointment(date, timeslot, new Person(patientProfile), provider);
-            appointments.add(appointment);
-            System.out.println("Office appointment booked successfully!");
-        } catch (Exception e) {
-            System.out.println("Error: Invalid input for office appointment.");
-        }
     }
 
     /**
@@ -560,8 +503,11 @@ public class ClinicManager {
             return null;
         }
         for (Provider provider : providers) {
-            if (provider.getNpi().equals(npi)) {
-                return provider;
+            if (provider instanceof Doctor) {  // Check if the provider is a Doctor
+                Doctor doctor = (Doctor) provider;
+                if (doctor.getNPI().equals(npi)) {
+                    return doctor;  // Return the doctor if NPI matches
+                }
             }
         }
         System.out.println("Error: Provider with NPI " + npi + " not found.");

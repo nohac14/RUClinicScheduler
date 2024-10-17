@@ -1,5 +1,3 @@
-package clinic;
-
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.Calendar;
@@ -608,9 +606,9 @@ public class Scheduler {
      */
     private int calculateCharge(Provider provider) {
         switch (provider.getSpecialty()) {
-            case FAMILY: return 250;
-            case PEDIATRICIAN: return 300;
-            case ALLERGIST: return 350;
+            case Specialty.FAMILY: return 250;
+            case Specialty.PEDIATRICIAN: return 300;
+            case Specialty.ALLERGIST: return 350;
             default: return 200;
         }
     }
