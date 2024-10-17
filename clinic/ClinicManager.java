@@ -576,14 +576,21 @@ public class ClinicManager {
      */
     private Location parseLocation(String locationString) {
         try {
+            // Split the location string by commas to extract city, county, and zip
             StringTokenizer tokenizer = new StringTokenizer(locationString, ",");
             String city = tokenizer.nextToken().trim();
             String county = tokenizer.nextToken().trim();
             String zip = tokenizer.nextToken().trim();
 
-            return new Location(city, county, zip);
+            // Use the enum's findByDetails method to get the corresponding Location enum
+            Location location = Location.findByDetails(city, county, zip);
+            if (location == null) {
+                throw new IllegalArgumentException("No matching location found for " + city + ", " + county + ", " + zip);
+            }
+
+            return location;
         } catch (Exception e) {
-            System.out.println("Error: Invalid location format.");
+            System.out.println("Error: Invalid location format - " + e.getMessage());
             return null;  // Return null if the location string is invalid
         }
     }
