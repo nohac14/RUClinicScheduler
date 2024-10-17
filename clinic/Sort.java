@@ -108,6 +108,7 @@ public class Sort {
      *
      * @param list the list of providers to be sorted.
      */
+    // Sorts providers using their profile comparison (last name, first name, DOB)
     public static void provider(List<Provider> list) {
         int size = list.size();
         for (int i = 0; i < size - 1; i++) {
@@ -115,8 +116,8 @@ public class Sort {
                 Provider p1 = list.get(j);
                 Provider p2 = list.get(j + 1);
 
-                if (p1.getName().compareTo(p2.getName()) > 0) {
-                    // Swap the providers in the list
+                if (p1.getProfile().compareTo(p2.getProfile()) > 0) {
+                    // Swap providers in the list if not in correct order
                     Provider temp = list.get(j);
                     list.set(j, list.get(j + 1));
                     list.set(j + 1, temp);

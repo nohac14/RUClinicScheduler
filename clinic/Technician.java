@@ -9,6 +9,11 @@ public class Technician extends Provider {
     }
 
     @Override
+    public String getNPI() {
+        return "N/A";
+    }
+
+    @Override
     public int rate() {
         return ratePerVisit;
     }

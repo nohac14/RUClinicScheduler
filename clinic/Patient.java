@@ -38,12 +38,17 @@ public class Patient extends Person {
         Visit currentVisit = visits;
 
         while (currentVisit != null) {
-            totalCharge += currentVisit.getAppointment().getProvider().rate();  // Correctly calling rate()
+            // Ensure the provider is a Doctor or a Technician before calling rate()
+            Person provider = currentVisit.getAppointment().getProvider();
+            if (provider instanceof Provider) {
+                totalCharge += ((Provider) provider).rate();  // Cast to Provider to access rate()
+            }
             currentVisit = currentVisit.getNext();
         }
 
         return totalCharge;
     }
+
 
     public void addVisit(Appointment appointment) {
         Visit newVisit = new Visit(appointment);

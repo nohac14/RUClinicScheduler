@@ -1,12 +1,5 @@
 package clinic;
 
-/**
- * Represents a Radiology room in the clinic.
- * Contains details about the room and the type of imaging service offered.
- * Includes an enum for the types of imaging services.
- *
- * @author studentName
- */
 public class Radiology {
 
     // Enum to represent different types of imaging services
@@ -16,8 +9,8 @@ public class Radiology {
         XRAY
     }
 
-    private String roomNumber; // Room number of the radiology room
-    private ImagingService serviceType; // Type of imaging service
+    private String roomNumber;  // Room number of the radiology room
+    private ImagingService serviceType;  // Type of imaging service offered in this room
 
     /**
      * Constructs a Radiology room with the specified room number and imaging service type.
@@ -44,7 +37,7 @@ public class Radiology {
      *
      * @return the type of imaging service.
      */
-    public ImagingService getServiceType() {
+    public ImagingService getRoomType() {
         return serviceType;
     }
 
