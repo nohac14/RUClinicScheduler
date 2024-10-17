@@ -100,7 +100,6 @@ public class Appointment implements Comparable<Appointment> {
      *
      * @return a formatted string representing the appointment details.
      */
-    @
     @Override
     public String toString() {
         if (provider instanceof Provider) {  // Ensure provider is of type Provider

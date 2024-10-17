@@ -17,6 +17,6 @@ public class RunProject2 {
      * @param args command-line arguments (not used in this application)
      */
     public static void main(String[] args) {
-        new testModular().run();
+        new ClinicManager().run();
     }
 }

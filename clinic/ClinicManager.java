@@ -80,30 +80,54 @@ public class ClinicManager {
 
                 // Parse provider info and create appropriate Provider objects (Doctor or Technician)
                 StringTokenizer tokenizer = new StringTokenizer(line, ",");
-                String type = tokenizer.nextToken();
-                String fName = tokenizer.nextToken();
-                String lName = tokenizer.nextToken();
-                String dob = tokenizer.nextToken();
-                String specialtyOrRate = tokenizer.nextToken();
-                String npiOrLocation = tokenizer.nextToken();
+                String type = tokenizer.nextToken();  // Either "DOCTOR" or "TECHNICIAN"
+                String fName = tokenizer.nextToken(); // First name
+                String lName = tokenizer.nextToken(); // Last name
+                String dob = tokenizer.nextToken();   // Date of birth in MM/DD/YYYY format
+                String specialtyOrRate = tokenizer.nextToken(); // Specialty for Doctor or Rate for Technician
+                String npiOrLocation = tokenizer.nextToken();   // NPI for Doctor or Location for Technician
 
+                // Create the profile for the provider
                 Profile profile = new Profile(fName, lName, parseDate(dob));
+
                 if (type.equals("DOCTOR")) {
+                    // Parse the doctor's specialty
                     Specialty specialty = Specialty.valueOf(specialtyOrRate.toUpperCase());
-                    Doctor doctor = new Doctor(profile, specialty, npiOrLocation);
+
+                    // Use npiOrLocation as the NPI string for the doctor
+                    String npi = npiOrLocation;
+
+                    // For now, we can assign the location and technician as null, or use logic to assign them
+                    Location location = null;  // You can assign a default or parsed location if needed
+                    Technician assignedTechnician = null;  // Assign a technician if available
+
+                    // Create the Doctor object
+                    Doctor doctor = new Doctor(profile, specialty, npi, location, assignedTechnician);
                     providers.add(doctor);
+
                 } else if (type.equals("TECHNICIAN")) {
+                    // Parse the rate for the technician
                     int rate = Integer.parseInt(specialtyOrRate);
-                    Technician technician = new Technician(profile, rate, npiOrLocation);
+
+                    // Parse the location from the npiOrLocation field
+                    Location location = parseLocation(npiOrLocation);
+
+                    // Create the Technician object
+                    Technician technician = new Technician(profile, rate, location);
                     providers.add(technician);
-                    technicianQueue.add(technician); // Add to custom circular queue for technicians
+
+                    // Add the technician to the circular queue
+                    technicianQueue.add(technician);
                 }
             }
             fileScanner.close();
         } catch (FileNotFoundException e) {
             System.out.println("Error: providers.txt not found.");
+        } catch (Exception e) {
+            System.out.println("Error parsing provider data: " + e.getMessage());
         }
     }
+
 
     /**
      * Handles the "D" command to schedule a new office appointment.
@@ -119,84 +143,29 @@ public class ClinicManager {
             String dob = tokenizer.nextToken();
             String npi = tokenizer.nextToken();
 
+            // Parse date and timeslot
             Date date = parseDate(aptDate);
             Timeslot timeslot = parseTimeSlot(timeSlot);
-            Profile patient = new Profile(fName, lName, parseDate(dob));
 
-            // Check for valid NPI and provider availability
+            // Create Profile for the patient and wrap it in a Patient object (which is a Person)
+            Profile patientProfile = new Profile(fName, lName, parseDate(dob));
+            Patient patient = new Patient(patientProfile);  // Assuming Patient extends Person
+
+            // Find the provider by NPI
             Provider provider = findProviderByNPI(npi);
             if (provider == null || !isProviderAvailable(provider, date, timeslot)) {
+                System.out.println("Error: Invalid provider or provider not available.");
                 return;
             }
 
-            // Create the appointment and add it to the list
+            // Create and add the appointment with the correct types for patient and provider (both are Person)
             Appointment appointment = new Appointment(date, timeslot, patient, provider);
             appointments.add(appointment);
+
             System.out.println("Office appointment booked for " + patient + " with provider " + provider);
         } catch (Exception e) {
             System.out.println("Error scheduling office appointment: " + e.getMessage());
         }
-    }
-
-    /**
-     * Handles the "T" command to schedule a new imaging appointment.
-     *
-     * @param tokenizer the tokenizer containing the appointment details.
-     */
-    private void handleImagingAppointment(StringTokenizer tokenizer) {
-        try {
-            String aptDate = tokenizer.nextToken();
-            String timeSlot = tokenizer.nextToken();
-            String fName = tokenizer.nextToken();
-            String lName = tokenizer.nextToken();
-            String dob = tokenizer.nextToken();
-            String roomType = tokenizer.nextToken().toUpperCase();
-
-            Date date = parseDate(aptDate);
-            Timeslot timeslot = parseTimeSlot(timeSlot);
-            Profile patient = new Profile(fName, lName, parseDate(dob));
-
-            // Assign next available technician for the requested room type (e.g., XRAY, ULTRASOUND, CATSCAN)
-            Radiology.ImagingService imagingService = Radiology.ImagingService.valueOf(roomType);
-            Provider technician = assignNextAvailableTechnician(imagingService, date, timeslot);
-            if (technician == null) {
-                System.out.println("No available technician for " + roomType + " at the requested time.");
-                return;
-            }
-
-            // Create and add the imaging appointment
-            Imaging imagingAppointment = new Imaging(date, timeslot, patient, technician, imagingService);
-            appointments.add(imagingAppointment);
-            System.out.println("Imaging appointment booked for " + patient + " for " + roomType);
-        } catch (Exception e) {
-            System.out.println("Error scheduling imaging appointment: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Assigns the next available technician for the given imaging service, date, and timeslot.
-     * Uses a circular list to rotate between technicians.
-     *
-     * @param imagingService the type of imaging service.
-     * @param date the date of the appointment.
-     * @param timeslot the timeslot of the appointment.
-     * @return the assigned Technician, or null if none are available.
-     */
-    private Provider assignNextAvailableTechnician(Radiology.ImagingService imagingService, Date date, Timeslot timeslot) {
-        for (int i = 0; i < technicianQueue.size(); i++) {
-            Technician technician = technicianQueue.get(i);
-
-            // Check if the technician is available for the requested timeslot
-            if (technician.isAvailable(imagingService, date, timeslot)) {
-                return technician;
-            }
-
-            // Move to the next technician (circular behavior)
-            Technician temp = technicianQueue.get(0);
-            technicianQueue.remove(0);
-            technicianQueue.add(temp);
-        }
-        return null;  // No technicians are available
     }
 
     /**
@@ -257,7 +226,7 @@ public class ClinicManager {
                 Appointment appointment = appointments.get(i);
                 if (appointment.getDate().equals(date) &&
                         appointment.getTimeslot().equals(oldTimeslot) &&
-                        appointment.getPatient().equals(patient)) {
+                        appointment.getPatient().getProfile().equals(patient)) {
                     appointmentToReschedule = appointment;
                     break;
                 }
@@ -268,8 +237,16 @@ public class ClinicManager {
                 return;
             }
 
+            // Ensure that the provider is actually a Provider instance
+            Provider provider = null;
+            if (appointmentToReschedule.getProvider() instanceof Provider) {
+                provider = (Provider) appointmentToReschedule.getProvider();
+            } else {
+                System.out.println("Error: The provider for this appointment is not valid.");
+                return;
+            }
+
             // Check if the provider is available for the new timeslot
-            Provider provider = appointmentToReschedule.getProvider();
             if (!isProviderAvailable(provider, date, newTimeslot)) {
                 System.out.println("Provider is not available at the new timeslot.");
                 return;
@@ -339,7 +316,7 @@ public class ClinicManager {
     private Provider findProviderByNPI(String npi) {
         for (int i = 0; i < providers.size(); i++) {
             Provider provider = providers.get(i);
-            if (provider.getNPI().equals(npi)) {
+            if (provider.getNpi().equals(npi)) {
                 return provider;
             }
         }
@@ -347,11 +324,12 @@ public class ClinicManager {
         return null;
     }
 
+
     /**
      * Helper method to check if a provider is available for the given date and timeslot.
      *
      * @param provider the provider to check.
-     * @param date the date of the appointment.
+     * @param date     the date of the appointment.
      * @param timeslot the timeslot of the appointment.
      * @return true if the provider is available, otherwise false.
      */
@@ -359,8 +337,8 @@ public class ClinicManager {
         for (int i = 0; i < appointments.size(); i++) {
             Appointment appointment = appointments.get(i);
             if (appointment.getProvider().equals(provider) &&
-                appointment.getDate().equals(date) &&
-                appointment.getTimeslot().equals(timeslot)) {
+                    appointment.getDate().equals(date) &&
+                    appointment.getTimeslot().equals(timeslot)) {
                 return false;  // Provider is not available
             }
         }
@@ -403,4 +381,211 @@ public class ClinicManager {
             System.out.println(providers.get(i));
         }
     }
+
+    private Technician assignNextAvailableTechnician(Radiology.ImagingService imagingService, Date date, Timeslot timeslot) {
+        for (int i = 0; i < technicianQueue.size(); i++) {
+            Technician technician = technicianQueue.get(0);
+
+            // Check if the technician is available for the requested timeslot
+            if (technician.isAvailable(imagingService, date, timeslot)) {
+                // Move the technician to the end of the queue (circular rotation)
+                technicianQueue.remove(0);
+                technicianQueue.add(technician);
+                return technician;  // Return the assigned technician
+            }
+
+            // If not available, rotate the technician to the end of the queue
+            technicianQueue.remove(0);
+            technicianQueue.add(technician);
+        }
+        return null;  // No technicians are available
+    }
+    /**
+     * Handles the "D" command to schedule a new office appointment.
+     *
+     * @param tokenizer the tokenizer containing the appointment details.
+     */
+    private void handleOfficeAppointment(StringTokenizer tokenizer) {
+        try {
+            // Parse input values
+            String aptDate = tokenizer.nextToken();
+            String timeSlot = tokenizer.nextToken();
+            String fName = tokenizer.nextToken();
+            String lName = tokenizer.nextToken();
+            String dob = tokenizer.nextToken();
+            String npi = tokenizer.nextToken();
+
+            // Validate date and timeslot
+            Date date = validateDate(aptDate);
+            Timeslot timeslot = validateTimeSlot(timeSlot);
+            if (date == null || timeslot == null) return; // Invalid date or timeslot
+
+            // Validate patient profile
+            Profile patientProfile = new Profile(fName, lName, validateDate(dob));
+
+            // Validate provider by NPI
+            Provider provider = findProviderByNPI(npi);
+            if (provider == null || !isProviderAvailable(provider, date, timeslot)) {
+                System.out.println("Error: Invalid provider or provider not available.");
+                return;
+            }
+
+            // Check for duplicate appointments
+            if (appointmentExists(patientProfile, date, timeslot)) {
+                System.out.println("Error: Duplicate appointment already exists.");
+                return;
+            }
+
+            // Create and add the new appointment
+            Appointment appointment = new Appointment(date, timeslot, new Person(patientProfile), provider);
+            appointments.add(appointment);
+            System.out.println("Office appointment booked successfully!");
+        } catch (Exception e) {
+            System.out.println("Error: Invalid input for office appointment.");
+        }
+    }
+
+    /**
+     * Handles the "T" command to schedule a new imaging appointment.
+     *
+     * @param tokenizer the tokenizer containing the appointment details.
+     */
+    private void handleImagingAppointment(StringTokenizer tokenizer) {
+        try {
+            // Parse input values
+            String aptDate = tokenizer.nextToken();
+            String timeSlot = tokenizer.nextToken();
+            String fName = tokenizer.nextToken();
+            String lName = tokenizer.nextToken();
+            String dob = tokenizer.nextToken();
+            String roomType = tokenizer.nextToken().toUpperCase();
+
+            // Validate date and timeslot
+            Date date = validateDate(aptDate);
+            Timeslot timeslot = validateTimeSlot(timeSlot);
+            if (date == null || timeslot == null) return; // Invalid date or timeslot
+
+            // Validate patient profile
+            Profile patientProfile = new Profile(fName, lName, validateDate(dob));
+
+            // Validate room type (imaging service)
+            Radiology.ImagingService imagingService;
+            try {
+                imagingService = Radiology.ImagingService.valueOf(roomType);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: Invalid imaging service type.");
+                return;
+            }
+
+            // Assign next available technician for the requested room type
+            Technician technician = assignNextAvailableTechnician(imagingService, date, timeslot);
+            if (technician == null) {
+                System.out.println("Error: No available technician for the requested time.");
+                return;
+            }
+
+            // Create and add the imaging appointment
+            Imaging imagingAppointment = new Imaging(date, timeslot, new Person(patientProfile), technician, new Radiology(imagingService));
+            appointments.add(imagingAppointment);
+            System.out.println("Imaging appointment booked successfully!");
+        } catch (Exception e) {
+            System.out.println("Error: Invalid input for imaging appointment.");
+        }
+    }
+
+    /**
+     * Validates the date string and ensures it conforms to the expected format.
+     *
+     * @param dateString the input date string.
+     * @return the parsed Date object, or null if invalid.
+     */
+    private Date validateDate(String dateString) {
+        try {
+            // Use appropriate date parsing logic (e.g., MM/DD/YYYY)
+            return parseDate(dateString);
+        } catch (Exception e) {
+            System.out.println("Error: Invalid date format.");
+            return null;
+        }
+    }
+
+    /**
+     * Validates the time slot input and ensures it corresponds to a valid timeslot.
+     *
+     * @param timeSlot the input timeslot number.
+     * @return the corresponding Timeslot object, or null if invalid.
+     */
+    private Timeslot validateTimeSlot(String timeSlot) {
+        try {
+            int slotNumber = Integer.parseInt(timeSlot);
+            Timeslot timeslot = Timeslot.getTimeslotByNumber(slotNumber);
+            if (timeslot == null) {
+                System.out.println("Error: Invalid timeslot.");
+            }
+            return timeslot;
+        } catch (NumberFormatException e) {
+            System.out.println("Error: Timeslot is not a valid number.");
+            return null;
+        }
+    }
+
+    /**
+     * Checks if an appointment with the same patient, date, and timeslot already exists.
+     *
+     * @param profile the patient's profile.
+     * @param date the appointment date.
+     * @param timeslot the appointment timeslot.
+     * @return true if an appointment exists, false otherwise.
+     */
+    private boolean appointmentExists(Profile profile, Date date, Timeslot timeslot) {
+        for (Appointment appointment : appointments) {
+            if (appointment.getPatient().getProfile().equals(profile) &&
+                    appointment.getDate().equals(date) &&
+                    appointment.getTimeslot().equals(timeslot)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Validates and finds a provider by NPI.
+     *
+     * @param npi the NPI number.
+     * @return the corresponding Provider, or null if not found or invalid.
+     */
+    private Provider findProviderByNPI(String npi) {
+        if (!npi.matches("\\d+")) {  // NPI should be numeric
+            System.out.println("Error: NPI must be numeric.");
+            return null;
+        }
+        for (Provider provider : providers) {
+            if (provider.getNpi().equals(npi)) {
+                return provider;
+            }
+        }
+        System.out.println("Error: Provider with NPI " + npi + " not found.");
+        return null;
+    }
+
+    /**
+     * Parses a location string in the format "city, county, zip" and returns a Location object.
+     *
+     * @param locationString the string containing location details.
+     * @return the Location object, or null if the format is invalid.
+     */
+    private Location parseLocation(String locationString) {
+        try {
+            StringTokenizer tokenizer = new StringTokenizer(locationString, ",");
+            String city = tokenizer.nextToken().trim();
+            String county = tokenizer.nextToken().trim();
+            String zip = tokenizer.nextToken().trim();
+
+            return new Location(city, county, zip);
+        } catch (Exception e) {
+            System.out.println("Error: Invalid location format.");
+            return null;  // Return null if the location string is invalid
+        }
+    }
+
 }

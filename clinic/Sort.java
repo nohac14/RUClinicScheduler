@@ -22,42 +22,24 @@ public class Sort {
                 switch (key) {
                     case 'p':
                         // Sort by patient profile, then date, then timeslot
-                        if (a1.getPatient().compareTo(a2.getPatient()) > 0 ||
-                                (a1.getPatient().compareTo(a2.getPatient()) == 0 &&
-                                        a1.getDate().compareTo(a2.getDate()) > 0) ||
-                                (a1.getPatient().compareTo(a2.getPatient()) == 0 &&
-                                        a1.getDate().compareTo(a2.getDate()) == 0 &&
-                                        a1.getTimeslot().compareTo(a2.getTimeslot()) > 0)) {
+                        if (comparePatientProfile(a1, a2) > 0) {
                             swap = true;
                         }
                         break;
                     case 'd':
                         // Sort by date, then timeslot, then provider name
-                        if (a1.getDate().compareTo(a2.getDate()) > 0 ||
-                                (a1.getDate().compareTo(a2.getDate()) == 0 &&
-                                        a1.getTimeslot().compareTo(a2.getTimeslot()) > 0) ||
-                                (a1.getDate().compareTo(a2.getDate()) == 0 &&
-                                        a1.getTimeslot().compareTo(a2.getTimeslot()) == 0 &&
-                                        a1.getProvider().getName().compareTo(a2.getProvider().getName()) > 0)) {
+                        if (compareByDateAndTimeslot(a1, a2) > 0) {
                             swap = true;
                         }
                         break;
-                    case 'l':d
+                    case 'l':
                         // Sort by provider's county, then date, then timeslot
-                        if (a1.getProvider().getLocation().getCounty().compareTo(
-                                a2.getProvider().getLocation().getCounty()) > 0 ||
-                                (a1.getProvider().getLocation().getCounty().compareTo(
-                                        a2.getProvider().getLocation().getCounty()) == 0 &&
-                                        a1.getDate().compareTo(a2.getDate()) > 0) ||
-                                (a1.getProvider().getLocation().getCounty().compareTo(
-                                        a2.getProvider().getLocation().getCounty()) == 0 &&
-                                        a1.getDate().compareTo(a2.getDate()) == 0 &&
-                                        a1.getTimeslot().compareTo(a2.getTimeslot()) > 0)) {
+                        if (compareByLocation(a1, a2) > 0) {
                             swap = true;
                         }
                         break;
                     default:
-                        throw new IllegalArgumentException("Invalid sorting key: " + key);
+                        throw new IllegalArgumentException("Invalid sorting key: " + key + ". Valid keys are 'p', 'd', 'l'.");
                 }
 
                 if (swap) {
@@ -69,6 +51,57 @@ public class Sort {
             }
         }
     }
+
+    /**
+     * Compares two appointments by patient profile, then by date and timeslot.
+     */
+    private static int comparePatientProfile(Appointment a1, Appointment a2) {
+        int patientComparison = a1.getPatient().compareTo(a2.getPatient());
+        if (patientComparison != 0) return patientComparison;
+
+        // If profiles are the same, compare by date and timeslot
+        int dateComparison = a1.getDate().compareTo(a2.getDate());
+        if (dateComparison != 0) return dateComparison;
+
+        return a1.getTimeslot().compareTo(a2.getTimeslot());
+    }
+
+    /**
+     * Compares two appointments by date, timeslot, and provider name.
+     */
+    private static int compareByDateAndTimeslot(Appointment a1, Appointment a2) {
+        int dateComparison = a1.getDate().compareTo(a2.getDate());
+        if (dateComparison != 0) return dateComparison;
+
+        int timeslotComparison = a1.getTimeslot().compareTo(a2.getTimeslot());
+        if (timeslotComparison != 0) return timeslotComparison;
+
+        // If date and timeslot are the same, compare provider names
+        return a1.getProvider().getName().compareTo(a2.getProvider().getName());
+    }
+
+    /**
+     * Compares two appointments by provider's county, then by date and timeslot.
+     */
+    private static int compareByLocation(Appointment a1, Appointment a2) {
+        // Ensure both providers are actually of type Provider
+        if (a1.getProvider() instanceof Provider provider1 && a2.getProvider() instanceof Provider provider2) {
+
+            String county1 = provider1.getLocation().getCounty();
+            String county2 = provider2.getLocation().getCounty();
+
+            int countyComparison = county1.compareTo(county2);
+            if (countyComparison != 0) return countyComparison;
+
+            int dateComparison = a1.getDate().compareTo(a2.getDate());
+            if (dateComparison != 0) return dateComparison;
+
+            return a1.getTimeslot().compareTo(a2.getTimeslot());
+        } else {
+            throw new IllegalArgumentException("Both participants in comparison must be Providers.");
+        }
+    }
+
 
     /**
      * Sorts a list of providers by their name.
