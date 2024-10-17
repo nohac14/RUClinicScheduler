@@ -18,17 +18,20 @@ public abstract class Provider extends Person {
         return specialty;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s [%s, %s, %s %s, %s]",
-                super.getProfile().toString(),
-                location.getCity(),
-                location.getCounty(),
-                location.getZip(),
-                specialty.name());
-    }
+    // Abstract method for getting the NPI, will be implemented in the Doctor class
+    public abstract String getNPI();
 
     public abstract int rate();
+
+    @Override
+    public String toString() {
+        return String.format("[%s, %s, %s %s, %s]",
+                this.getProfile().getFullName(),
+                getLocation().getCity(),
+                getLocation().getCounty(),
+                getLocation().getZip(),
+                specialty.name());
+    }
 
     // Method to return a list of all providers
     public static List<Provider> getAllProviders() {

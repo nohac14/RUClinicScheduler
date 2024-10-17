@@ -3,29 +3,20 @@ package clinic;
 public class Doctor extends Provider {
     private Specialty specialty;  // Doctor's medical specialty
     private String npi;  // National Provider Identification (NPI)
-    private Technician technician;  // Associated technician
 
-    public Doctor(Profile profile, Specialty specialty, String npi, Location location, Technician technician) {
-        super(profile, location, specialty);
+    public Doctor(Profile profile, Specialty specialty, String npi, Location location) {
+        super(profile, location, specialty);  // Call the superclass constructor
         this.specialty = specialty;
         this.npi = npi;
-        this.technician = technician;  // Assign the technician during doctor creation
     }
 
     public Specialty getSpecialty() {
         return specialty;
     }
 
-    public String getNpi() {
+    @Override
+    public String getNPI() {
         return npi;
-    }
-
-    public Technician getTechnician() {
-        return technician;
-    }
-
-    public void setTechnician(Technician technician) {
-        this.technician = technician;
     }
 
     @Override
@@ -38,20 +29,18 @@ public class Doctor extends Provider {
             case ALLERGIST:
                 return 350;
             default:
-                return 200;
+                return 200;  // Default rate for any undefined specialty
         }
     }
 
     @Override
     public String toString() {
-        return String.format("[%s, %s, %s %s, %s, NPI: %s, Technician: %s]",
+        return String.format("[%s, %s, %s %s, %s, NPI: %s]",
                 this.getProfile().getFullName(),
                 getLocation().getCity(),
                 getLocation().getCounty(),
                 getLocation().getZip(),
                 specialty.name(),
-                npi,
-                technician != null ? technician.getProfile().getFullName() : "None"
-        );
+                npi);
     }
 }
