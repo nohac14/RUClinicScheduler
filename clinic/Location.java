@@ -1,25 +1,23 @@
 package clinic;
 
 public enum Location {
-    BRIDGEWATER("Bridgewater", "Somerset", "08807"),
-    EDISON("Edison", "Middlesex", "08817"),
-    PISCATAWAY("Piscataway", "Middlesex", "08854"),
-    PRINCETON("Princeton", "Mercer", "08542"),
-    MORRISTOWN("Morristown", "Morris", "07960"),
-    CLARK("Clark", "Union", "07066");
+    BRIDGEWATER("BRIDGEWATER", "Somerset", "08807"),
+    EDISON("EDISON", "Middlesex", "08817"),
+    PISCATAWAY("PISCATAWAY", "Middlesex", "08854"),
+    PRINCETON("PRINCETON", "Mercer", "08542"),
+    MORRISTOWN("MORRISTOWN", "Morris", "07960"),  // Added Morristown
+    CLARK("CLARK", "Union", "07066");
 
     private final String city;
     private final String county;
     private final String zip;
 
-    // Constructor
     Location(String city, String county, String zip) {
         this.city = city;
         this.county = county;
         this.zip = zip;
     }
 
-    // Getters
     public String getCity() {
         return city;
     }
@@ -32,9 +30,23 @@ public enum Location {
         return zip;
     }
 
-    // Override toString() for a formatted location string
     @Override
     public String toString() {
         return city + ", " + county + " " + zip;
     }
+
+    /**
+     * Simplified lookup by city only.
+     * @param city the city name
+     * @return the corresponding Location, or null if not found.
+     */
+    public static Location findByCity(String city) {
+        for (Location loc : Location.values()) {
+            if (loc.city.equalsIgnoreCase(city)) {
+                return loc;
+            }
+        }
+        return null;  // No match found for city
+    }
 }
+

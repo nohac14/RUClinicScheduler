@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/RUClinicScheduler.iml" filepath="$PROJECT_DIR$/.idea/RUClinicScheduler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lastproject/lastproject.iml" filepath="$PROJECT_DIR$/lastproject/lastproject.iml" />
       <module fileurl="file://$PROJECT_DIR$/untitled.iml" filepath="$PROJECT_DIR$/untitled.iml" />
     </modules>
   </component>
